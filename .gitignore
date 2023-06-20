@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# React build directories
+build/
+
+# Miscellaneous
+.DS_Store

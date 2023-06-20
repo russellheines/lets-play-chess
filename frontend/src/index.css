@@ -1,0 +1,278 @@
+/*
+ * Portrait:
+ * 
+ *   History
+ *   Captured pieces
+ *   Player information
+ *   Board
+ *   Player information
+ *   Captured pieces
+ *
+ * Landscape:
+ *
+ *            Captured pieces
+ *            Player information
+ *   Board    History
+ *            Player information
+ *            Captured pieces
+ */  
+
+ /* Portait */
+
+.landscape {
+    display: none;
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  /* center horizontally */
+    align-items: center;  /* center vertically */
+}
+.history.portrait {
+    order: 1;
+    width: 98%; /* make responsive */
+    display: flex;
+}
+.board {
+    order: 2;
+    width: 98%; /* make responsive */
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+@media only screen and (orientation: landscape) {
+.history.portrait {
+    display: none;
+}
+.historyBtns.portrait {
+    display: none;
+}
+.main {
+    flex-direction: row;
+    gap: 24px;  /* make responsive */
+}
+.history.landscape {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    width: 40vh;  /* make responsive, 40vh looks good on laptop, 60vh on mobile */
+    height: 30vh;  /* make responsive */
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.historyBtns.landscape {
+    display: flex;
+}
+
+.board {
+    order: 1;
+    width: 80vh;  /* make responsive */
+}
+}
+
+/* History */
+
+.historyBtns {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgb(247, 246, 245);
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.historyBtns.portrait {
+    width: 98%;  /* move to parent? */
+}
+.historyBtn {
+    text-align: center;
+}
+.historyBtn.disabled {
+    opacity: 0.25;
+}
+.historyBtn:hover:not(.disabled) {
+    background-color: rgb(137,178,91);
+    color: rgb(255,255,255)
+}
+
+.historyMoves {
+    flex-grow: 1;
+	display: flex;
+}
+.historyMoves.portrait {
+	box-shadow: 0 4px 4px #cdc8c1 inset;
+    overflow-x: hidden;
+}
+.historyMoves.landscape {
+    flex-direction: column;
+    overflow-y: auto;
+}
+.historyMoveContainer {
+	display: flex;
+}
+.historyMoveNumber, .historyMove {
+    padding: 4px;
+}
+.historyMoves.portrait .historyMoveContainer:not(:first-child) {
+    padding-left: 8px;
+}
+.historyMoves.landscape > .historyMoveContainer > .historyMoveNumber {
+    width: 20%;
+    background-color: rgb(247, 246, 245);
+    text-align: center;
+}
+.historyMoves.landscape > .historyMoveContainer > .historyMove {
+    width: 40%;
+    padding-left: 12px;
+}
+.historyMove.current {
+    background-color: rgb(209,228,246);
+}
+.historyMove:hover:not(.current) {
+    background-color: rgb(27, 120, 208);
+    color: rgb(255,255,255)
+}
+
+/* Squares */
+
+.square {
+    width: 12.5%;
+    padding-top: 12.5%;  /* https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
+    position: relative;
+}
+.square > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.light {
+    background-color: rgb(240, 217, 181);
+}
+.dark {
+    background-color: rgb(181, 136, 99);
+}
+.light.selected {
+    background-color: rgb(130, 151, 105);
+}
+.light.lastFrom, .light.lastTo {
+    background-color: rgb(205, 210, 106);
+}
+.dark.selected {
+    background-color: rgb(100, 111, 64);
+}
+.dark.lastFrom, .dark.lastTo {    
+    background-color: rgb(170, 162, 58);
+}
+.check {
+    background-image: radial-gradient(ellipse at center, red 0%, #e70000 25%, rgba(169,0,0,0) 89%, rgba(158,0,0,0) 100%);
+}
+
+/* Captured pieces */
+
+.captured {
+    width: 24px;
+}
+.capturedPawn + .capturedPawn {
+    margin-left: -10px;
+}
+.capturedPawn + .capturedKnight {
+    margin-left: -8px;
+}
+.capturedPawn + .capturedBishop {
+    margin-left: -8px;
+}
+.capturedPawn + .capturedRook {
+    margin-left: -8px;
+}
+.capturedPawn + .capturedQueen {
+    margin-left: -6px;
+}
+.capturedKnight + .capturedKnight {
+    margin-left: -6px;
+}
+.capturedKnight + .capturedBishop {
+    margin-left: -4px;
+}
+.capturedKnight + .capturedRook {
+    margin-left: -4px;
+}
+.capturedKnight + .capturedQueen {
+    margin-left: -4px;
+}
+.capturedBishop + .capturedBishop {
+    margin-left: -6px;
+}
+.capturedBishop + .capturedRook {
+    margin-left: -6px;
+}
+.capturedBishop + .capturedQueen {
+    margin-left: -4px;
+}
+.capturedRook + .capturedRook {
+    margin-left: -8px;
+}
+.capturedRook + .capturedQueen {
+    margin-left: -4px;
+}
+
+/* Player information */
+
+.playerText {
+    margin: 5px;
+}
+
+/* Modals */
+.modalSquares {
+    display: flex;
+    justify-content: center;
+}
+.modalSquare {
+    width: 20%;
+    padding-top: 20%;  /* https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
+    position: relative;
+    background-color: rgb(243, 243, 243);
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    margin: 8px;
+}
+.modalSquare > * {
+	position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+}
+.modalSquare:hover {
+    background-color: rgb(249, 249, 249);
+}
+
+/* Is this needed? */
+
+div, img {
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Not used */
+
+.light.legal:hover, .light.legal-capture:hover {
+    background-color: rgb(174, 177, 135);
+}
+
+.dark.legal:hover, .dark.legal-capture:hover {
+    background-color: rgb(132, 121, 78);
+}
+.legal {
+    background-image: radial-gradient(rgba(20, 85, 30, 0.5) 19%, rgba(0, 0, 0, 0) 20%);
+}
+.legal-capture {
+    background-image: radial-gradient(transparent 0%, transparent 79%, rgba(20, 85, 0, 0.3) 80%);
+}
