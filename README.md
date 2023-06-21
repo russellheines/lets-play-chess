@@ -1,6 +1,6 @@
 # lets-play-chess
 
-Welcome to my game of chess! You can try playing at https://russellheines.github.io/react-chess/.
+Welcome to my game of chess! You can try playing at https://lets-play-chess-6tl7g2wh6a-uc.a.run.app.
 
 ## Run locally
 
