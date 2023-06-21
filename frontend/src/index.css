@@ -17,63 +17,76 @@
  *            Captured pieces
  */  
 
- /* Portait */
+ /* Portrait */
 
-.landscape {
-    display: none;
-}
-.main {
+ .portrait {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;  /* center horizontally */
-    align-items: center;  /* center vertically */
 }
-.history.portrait {
-    order: 1;
-    width: 98%; /* make responsive */
+.portrait .history {
+    width: 98%;
     display: flex;
+    flex-direction: row;
 }
-.board {
-    order: 2;
-    width: 98%; /* make responsive */
-    display: flex;
-    flex-wrap: wrap;
-    box-shadow:
-        0 2px 2px 0 rgba(0, 0, 0, 0.14),
-        0 3px 1px -2px rgba(0, 0, 0, 0.2),
-        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+.portrait .board {
+    width: 98%;
+}
+.portrait .historyBtns {
+    width: 98%;
+}
+.portrait .historyMoves {
+	box-shadow: 0 4px 4px #cdc8c1 inset;
+    overflow-x: hidden;
+}
+.portrait .capturedContainer {
+    width: 98%;
 }
 
-@media only screen and (orientation: landscape) {
-.history.portrait {
-    display: none;
-}
-.historyBtns.portrait {
-    display: none;
-}
-.main {
+/* Landscape */
+
+.landscape {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
     flex-direction: row;
     gap: 24px;  /* make responsive */
 }
-.history.landscape {
-    order: 2;
+.landscape .board {
+    width: 80vh;
+}
+.landscape .panel {
     display: flex;
     flex-direction: column;
     width: 40vh;  /* make responsive, 40vh looks good on laptop, 60vh on mobile */
+}
+.landscape .historyMoves {
     height: 30vh;  /* make responsive */
+}
+.landscape .historyMoves {
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.landscape .historyMoveNumber {
+    width: 20%;
+    background-color: rgb(247, 246, 245);
+    text-align: center;
+}
+.landscape .historyMove {
+    width: 40%;
+    padding-left: 12px;
+}
+
+/* Box shadow */
+
+.box-shadow {
     box-shadow:
         0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 3px 1px -2px rgba(0, 0, 0, 0.2),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-.historyBtns.landscape {
-    display: flex;
-}
-
-.board {
-    order: 1;
-    width: 80vh;  /* make responsive */
-}
 }
 
 /* History */
@@ -86,9 +99,6 @@
         0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 3px 1px -2px rgba(0, 0, 0, 0.2),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-.historyBtns.portrait {
-    width: 98%;  /* move to parent? */
 }
 .historyBtn {
     text-align: center;
@@ -105,31 +115,11 @@
     flex-grow: 1;
 	display: flex;
 }
-.historyMoves.portrait {
-	box-shadow: 0 4px 4px #cdc8c1 inset;
-    overflow-x: hidden;
-}
-.historyMoves.landscape {
-    flex-direction: column;
-    overflow-y: auto;
-}
 .historyMoveContainer {
 	display: flex;
 }
 .historyMoveNumber, .historyMove {
     padding: 4px;
-}
-.historyMoves.portrait .historyMoveContainer:not(:first-child) {
-    padding-left: 8px;
-}
-.historyMoves.landscape > .historyMoveContainer > .historyMoveNumber {
-    width: 20%;
-    background-color: rgb(247, 246, 245);
-    text-align: center;
-}
-.historyMoves.landscape > .historyMoveContainer > .historyMove {
-    width: 40%;
-    padding-left: 12px;
 }
 .historyMove.current {
     background-color: rgb(209,228,246);
@@ -137,6 +127,17 @@
 .historyMove:hover:not(.current) {
     background-color: rgb(27, 120, 208);
     color: rgb(255,255,255)
+}
+
+/* Board */
+
+.board {
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* Squares */
@@ -177,6 +178,8 @@
 
 .captured {
     width: 24px;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 .capturedPawn + .capturedPawn {
     margin-left: -10px;
@@ -228,6 +231,7 @@
 }
 
 /* Modals */
+
 .modalSquares {
     display: flex;
     justify-content: center;

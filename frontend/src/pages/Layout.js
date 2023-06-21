@@ -4,7 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Outlet, Link } from "react-router-dom";
 
-function TopNavbar(props) {
+function Layout(props) {
 
 /*
 <Link to="/" className="nav-link">
@@ -48,4 +48,4 @@ function TopNavbar(props) {
 }
 
 
-export default TopNavbar;
+export default Layout;

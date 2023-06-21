@@ -42,7 +42,7 @@ export function fen2matrix(fen) {
  * been taken off the board. 
  */   
 export function captured(fen, color) {
-	
+
 	let pieces = ['p','p','p','p','p','p','p','p','n','n','b','b','r','r','q'];	
 	
     let pos = 0;

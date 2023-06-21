@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive'
 
 import { io } from 'socket.io-client';
 
 import { Chess } from 'chess.js';
 
-import LoopIcon from '@mui/icons-material/Loop';
-import AddIcon from '@mui/icons-material/Add';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
 import Board from "./Board";
 import History from "./History";
+import Controls from "./Controls";
+import Captured from "./Captured";
 import MyModal from "./Modal";
 
 /*export const socket = io("http://localhost:3001", {
@@ -25,7 +24,7 @@ export const socket = io({
 
 function OnePlayer() {
   
-	//const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
 
 	const [fen, setFen] = useState([]);
 	const [time, setTime] = useState(-1);  // initial setup is 0...
@@ -234,17 +233,10 @@ function OnePlayer() {
 
 	return (
 		<>
-			<div className="main">
-				<Board
-					fen={fen[time]}
-					orientation={orientation}
-					selected={selected}
-					lastFrom={lastFrom[time]}
-					lastTo={lastTo[time]}
-					handleClickSquare={handleClickSquare}
-					inCheck={inCheck[time]}
-				/>
+			{isPortrait &&
+			<div className="portrait">
 				<History
+					portrait={true}
 					moves={moves}
 					time={time}
 					handleFirst={handleFirst}
@@ -255,12 +247,69 @@ function OnePlayer() {
 					handleChangeOrientation={handleChangeOrientation}
 					handleNewGame={handleNewGame}
 				/>
-				<div className="historyBtns portrait" style={{order: 3}}>
-					<div className="historyBtn" onClick={handleChangeOrientation}><LoopIcon/></div>
-                    <div className="historyBtn" onClick={handleNewGame}><AddIcon/></div>
-                    <div className="historyBtn"><MoreHorizIcon/></div>
+				<Captured
+					fen={time >= 0 ? fen[time] : []}
+					color={orientation === 1 ? "w" : "b"}
+				/>
+				<Board
+					fen={fen[time]}
+					orientation={orientation}
+					selected={selected}
+					lastFrom={lastFrom[time]}
+					lastTo={lastTo[time]}
+					handleClickSquare={handleClickSquare}
+					inCheck={inCheck[time]}
+				/>
+				<Controls
+					handleChangeOrientation={handleChangeOrientation}
+					handleNewGame={handleNewGame}
+				/>
+				<Captured
+					fen={time >= 0 ? fen[time] : []}
+					color={orientation === 0 ? "w" : "b"}
+				/>
+			</div>
+			}
+			{!isPortrait &&
+			<div className="landscape">
+				<Board
+					fen={fen[time]}
+					orientation={orientation}
+					selected={selected}
+					lastFrom={lastFrom[time]}
+					lastTo={lastTo[time]}
+					handleClickSquare={handleClickSquare}
+					inCheck={inCheck[time]}
+				/>
+				<div className="panel">
+					<Captured
+						fen={time >= 0 ? fen[time] : []}
+						color={orientation === 1 ? "w" : "b"}
+					/>
+					<div className="box-shadow">
+						<History
+							moves={moves}
+							time={time}
+							handleFirst={handleFirst}
+							handlePrevious={handlePrevious}
+							handleNext={handleNext}
+							handleLast={handleLast}
+							handleClickMove={handleClickMove}
+							handleChangeOrientation={handleChangeOrientation}
+							handleNewGame={handleNewGame}
+						/>
+						<Controls
+							handleChangeOrientation={handleChangeOrientation}
+							handleNewGame={handleNewGame}
+						/>
+					</div>
+					<Captured
+						fen={time >= 0 ? fen[time] : []}
+						color={orientation === 0 ? "w" : "b"}
+					/>
 				</div>
 			</div>
+			}
 			<MyModal
 				chooseSide={chooseSide}
 				youWon={youWon}

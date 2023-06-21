@@ -1,14 +1,18 @@
 import React from 'react'
 
-import { ReactComponent as CapturedRook } from './images/wikipedia/rgt45.svg';
-import { ReactComponent as CapturedKnight } from './images/wikipedia/ngt45.svg';
-import { ReactComponent as CapturedBishop } from './images/wikipedia/bgt45.svg';
-import { ReactComponent as CapturedQueen } from './images/wikipedia/qgt45.svg';
-import { ReactComponent as CapturedPawn } from './images/wikipedia/pgt45.svg';
+import { ReactComponent as CapturedRook } from '../images/wikipedia/rgt45.svg';
+import { ReactComponent as CapturedKnight } from '../images/wikipedia/ngt45.svg';
+import { ReactComponent as CapturedBishop } from '../images/wikipedia/bgt45.svg';
+import { ReactComponent as CapturedQueen } from '../images/wikipedia/qgt45.svg';
+import { ReactComponent as CapturedPawn } from '../images/wikipedia/pgt45.svg';
 
 import * as Utils from './Utils'
 
 function Captured(props) {
+
+    if (props.fen.length === 0) {
+        return;
+    }
 
     const pieces = [];
 
@@ -46,7 +50,7 @@ function Captured(props) {
 	}
     
     return (
-        <div>
+        <div className="capturedContainer">
             {pieces}<span className="score">{score}</span>
         </div>
     );

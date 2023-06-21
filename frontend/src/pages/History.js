@@ -5,20 +5,14 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import LastPageIcon from '@mui/icons-material/LastPage';
 
-import LoopIcon from '@mui/icons-material/Loop';
-import AddIcon from '@mui/icons-material/Add';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
 window.addEventListener("resize", scrollIntoView);
 
 function scrollIntoView() {
 
-    // https://stackoverflow.com/questions/56688002/javascript-scrollintoview-only-in-immediate-parent
-		
 	let currentList = document.getElementsByClassName("current");
 	if (currentList.length > 0) {
 		for (let current of currentList) {
-			current.scrollIntoView({block: "nearest", inline: "nearest"});
+			current.scrollIntoView();
 		}
 		return;
 	}
@@ -26,7 +20,7 @@ function scrollIntoView() {
     let historyList = document.getElementsByClassName("history");
     for (let history of historyList) {
 	    if ((history) && (history.getElementsByClassName("historyMoveNumber")[0])) {
-	    	history.getElementsByClassName("historyMoveNumber")[0].scrollIntoView({block: "nearest", inline: "nearest"});
+	    	history.getElementsByClassName("historyMoveNumber")[0].scrollIntoView();
 	    }
  	}
 }
@@ -76,35 +70,34 @@ function History(props) {
         );
     }
 
-    return (
-        <>
-        	<div className="history portrait">
+    if (props.portrait) {
+        return (
+             <div className="history">
                 <div className={firstStyle} onClick={first}><FirstPageIcon/></div>
                 <div className={previousStyle} onClick={previous}><NavigateBeforeIcon/></div>
-                <div className="historyMoves portrait">
+                <div className="historyMoves">
                     {items}
                 </div>
-               	<div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
-               	<div className={lastStyle} onClick={last}><LastPageIcon/></div>                    
+                <div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
+               <div className={lastStyle} onClick={last}><LastPageIcon/></div> 
             </div>
-    	    <div className="history landscape">
+        )
+    }
+    else {
+        return (
+    	    <div className="history">
                 <div className="historyBtns">
                     <div className={firstStyle} onClick={first}><FirstPageIcon/></div>
                     <div className={previousStyle} onClick={previous}><NavigateBeforeIcon/></div>
-               	    <div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
-           	        <div className={lastStyle} onClick={last}><LastPageIcon/></div>                    
+                    <div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
+               	    <div className={lastStyle} onClick={last}><LastPageIcon/></div>                    
                 </div>
-           	    <div className="historyMoves landscape">
+       	        <div className="historyMoves">
                     {items}
                 </div>
-                <div className="historyBtns">
-                    <div className="historyBtn" onClick={props.handleChangeOrientation}><LoopIcon/></div>
-                    <div className="historyBtn" onClick={props.handleNewGame}><AddIcon/></div>
-                    <div className="historyBtn"><MoreHorizIcon/></div>
-                </div>
             </div>
-        </>
-    );
+        )
+    };
 }
 
 export default History
