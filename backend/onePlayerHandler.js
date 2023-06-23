@@ -30,7 +30,7 @@ module.exports = (io, socket) => {
     if (req.session.gameId) {
         console.log('reloading game ' + req.session.gameId);
 
-        socket.emit('reset');
+        socket.emit('reset', req.session.color);
 
         // listen for changes
         const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
@@ -43,10 +43,11 @@ module.exports = (io, socket) => {
         });
     }
 
-    socket.on('start', () => {
+    socket.on('start', color => {
         req.session.gameId = crypto.randomUUID();
+        req.session.color = color;
         req.session.save();
-        console.log('starting game ' + req.session.gameId);
+        console.log('starting game ' + req.session.gameId + ', playing as ' + color);
 
         // listen for changes
         const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');

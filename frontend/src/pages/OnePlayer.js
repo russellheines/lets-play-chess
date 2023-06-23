@@ -26,10 +26,10 @@ function OnePlayer() {
   
 	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
 
+	const [color, setColor] = useState(0);  // playing as white
+	const [orientation, setOrientation] = useState(0);  // oriented for white
 	const [fen, setFen] = useState([]);
 	const [time, setTime] = useState(-1);  // initial setup is 0...
-	const [orientation, setOrientation] = useState(0);  // oriented for white
-	const [playingAs, setPlayingAs] = useState(0);  // playing as white
 	const [selected, setSelected] = useState(null);
 	const [lastFrom, setLastFrom] = useState([null]);  // no last from at time 0
 	const [lastTo, setLastTo] = useState([null]);  // no last to at time 0
@@ -81,12 +81,15 @@ function OnePlayer() {
 
 			if (chessjs.isCheckmate()) {				
 				setGameOver(true);
-				setYouWon(((chessjs.turn() === 'w' && playingAs === 0) || (chessjs.turn() === 'b' && playingAs === 1)) ? false : true);
-				setYouLost(((chessjs.turn() === 'w' && playingAs === 0) || (chessjs.turn() === 'b' && playingAs === 1)) ? true : false);
+				setYouWon(((chessjs.turn() === 'w' && color === 0) || (chessjs.turn() === 'b' && color === 1)) ? false : true);
+				setYouLost(((chessjs.turn() === 'w' && color === 0) || (chessjs.turn() === 'b' && color === 1)) ? true : false);
 			}
 		});
 
-		socket.on("reset", () => {
+		socket.on("reset", color => {
+			console.log("reset" + color);
+			setColor(color);
+			setOrientation(color);
 			setFen([]);
 			setTime(-1);
 			setLastFrom([null]);
@@ -103,7 +106,7 @@ function OnePlayer() {
 			socket.off('position');
 			socket.off('reset');
 		};
-	}, [playingAs]);
+	}, [color]);
 
 	function handleClickSquare(row, col) {
 		if (gameOver === true) {
@@ -128,12 +131,12 @@ function OnePlayer() {
 			}
 
 			// return if playing as white and color is not white
-			if ((playingAs === 0) && (chessjs.get(sq).color !== 'w')) {
+			if ((color === 0) && (chessjs.get(sq).color !== 'w')) {
 				return;
 			}
 
 			// return if playing as black and color is not black
-			if ((playingAs === 1) && (chessjs.get(sq).color !== 'b')) {
+			if ((color === 1) && (chessjs.get(sq).color !== 'b')) {
 				return;
 			}
 
@@ -172,24 +175,18 @@ function OnePlayer() {
 	}
 
 	function handlePlayAsWhite() {
-		setOrientation(0);
-		setPlayingAs(0);
-		startNewGame();
+		startNewGame(0);
 	}
 
 	function handlePlayAsBlack() {
-		setOrientation(1);
-		setPlayingAs(1);
-		startNewGame();
+		startNewGame(1);
 		const chessjs = new Chess();
 		socket.emit("computerMove", { "fen" : chessjs.fen()});
 	}
 
 	function handlePlayAsRandom() {
 		const random = Math.floor(Math.random() * 2);
-		setOrientation(random);
-		setPlayingAs(random);
-		startNewGame();
+		startNewGame(random);
 		if (random === 1) {
 			const chessjs = new Chess();
 			socket.emit("computerMove", { "fen" : chessjs.fen()});
@@ -204,7 +201,9 @@ function OnePlayer() {
 		setChooseSide(true);
 	}
 
-	function startNewGame() {
+	function startNewGame(color) {
+		setColor(color);
+		setOrientation(color);
 		setFen([]);
 		setTime(-1);
 		setLastFrom([null]);
@@ -215,7 +214,7 @@ function OnePlayer() {
 		setChooseSide(false);
 		setYouWon(false);
 		setYouLost(false);
-		socket.emit("start");
+		socket.emit("start", color);
 	}
 		
 	function handleFirst() {
