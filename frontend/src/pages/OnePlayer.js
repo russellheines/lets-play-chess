@@ -57,9 +57,7 @@ function OnePlayer() {
 			setFen(fen => [...fen, position.fen]);
 			setTime(t => t + 1);
 
-			//console.log("position.lastMove=" + position.lastMove);
 			if (position.lastMove) {
-				//console.log("position.lastMove=" + position.lastMove.from + ", " + position.lastMove.to);
 				let from = { row: (8 - position.lastMove.from[1]), col: (position.lastMove.from[0].charCodeAt() - 97) };  // e2 = row 7, col 4
 				setLastFrom(lastFrom => [...lastFrom, from]);
 	
@@ -88,8 +86,22 @@ function OnePlayer() {
 			}
 		});
 
+		socket.on("reset", () => {
+			setFen([]);
+			setTime(-1);
+			setLastFrom([null]);
+			setLastTo([null]);
+			setMoves([]);
+			setInCheck([]);
+			setGameOver(false);
+			setChooseSide(false);
+			setYouWon(false);
+			setYouLost(false);
+		});
+
 		return () => {
 			socket.off('position');
+			socket.off('reset');
 		};
 	}, [playingAs]);
 

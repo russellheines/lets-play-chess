@@ -30,6 +30,8 @@ module.exports = (io, socket) => {
     if (req.session.gameId) {
         console.log('reloading game ' + req.session.gameId);
 
+        socket.emit('reset');
+
         // listen for changes
         const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
         unsubscribe = query.onSnapshot((snapshot) => {
