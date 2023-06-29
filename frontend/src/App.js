@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/Layout";
-import Home from "./pages/Home";
-import OnePlayer from "./pages/OnePlayer";
+
+import Layout from "./components/Layout";
+import OnePlayer from "./components/OnePlayer";
+import TwoPlayers from "./components/TwoPlayers";
+import Practice from "./components/Practice";
 
 function App() {
 
@@ -29,7 +31,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout name={name}/>}>
           <Route index element={<OnePlayer />} />
-          <Route path="play" element={<OnePlayer/>} />
+          <Route path="onePlayer" element={<OnePlayer/>} />
+          <Route path="twoPlayers" element={<TwoPlayers/>} />
+          <Route path="practice" element={<Practice/>} />
         </Route>
       </Routes>
     </BrowserRouter>

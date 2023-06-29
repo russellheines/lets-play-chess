@@ -87,7 +87,6 @@ function OnePlayer() {
 		});
 
 		socket.on("reset", color => {
-			console.log("reset" + color);
 			setColor(color);
 			setOrientation(color);
 			setFen([]);

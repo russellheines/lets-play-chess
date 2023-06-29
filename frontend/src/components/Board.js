@@ -1,11 +1,45 @@
 import React from 'react'
 
 import Square from './Square'
-import * as Utils from './Utils'
+
+function fen2matrix(fen) {
+
+    let matrix = [[null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null],
+        [null, null, null, null, null, null, null, null]];
+
+    if (!fen) {
+        return matrix;
+    }
+    
+    let pos = 0;
+    for (let i=0; i<8; i++) {
+        for (let j=0; j<8;) {
+            let c = fen.charAt(pos++);
+            if (c === '/') {
+                continue;
+            }
+			else if (['p','n','b','r','q','k','P','N','B','R','Q','K'].includes(c)) {
+            	matrix[i][j] = c;
+            	j++;
+            }
+            else {
+                j += parseInt(c);
+            }            
+        }
+    }
+    
+    return matrix;
+}
 
 function Board(props) {
 
-    const matrix = Utils.fen2matrix(props.fen);
+    const matrix = fen2matrix(props.fen);
     const squares = [];
 
     for (let row = 0; row <= 7; row++) {

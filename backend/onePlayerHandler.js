@@ -1,25 +1,13 @@
 const crypto = require('crypto');
 
+const { PubSub } = require('@google-cloud/pubsub');
 const { Firestore } = require('@google-cloud/firestore');
 
 const { Chess } = require('chess.js');
 
 const db = require('./db');
 
-function moveRandomly(fen) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const chessjs = new Chess(fen);
-
-        const allPossibleMoves = chessjs.moves({ verbose: true });
-        const randomMove = allPossibleMoves[Math.floor(Math.random() * allPossibleMoves.length)];
-
-        chessjs.move(randomMove);
-
-        resolve({'fen' : chessjs.fen(), 'lastMove' : randomMove});
-      }, 1000);
-    });
-}
+const pubSubClient = new PubSub();
 
 module.exports = (io, socket) => {
     console.log('user connected');
@@ -27,11 +15,7 @@ module.exports = (io, socket) => {
 
     function unsubscribe() {}
 
-    if (req.session.gameId) {
-        console.log('reloading game ' + req.session.gameId);
-
-        socket.emit('reset', req.session.color);
-
+    function subscribe() {
         // listen for changes
         const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
         unsubscribe = query.onSnapshot((snapshot) => {
@@ -43,21 +27,34 @@ module.exports = (io, socket) => {
         });
     }
 
+    function publish(fen) {
+        const data = JSON.stringify({gameId: req.session.gameId, fen: fen});
+        const dataBuffer = Buffer.from(data);
+        console.log(data);
+
+        try {
+          const messageId = pubSubClient
+            .topic("random-topic")
+            .publishMessage({data: dataBuffer});
+          console.log(`Message ${messageId} published.`);
+        } catch (error) {
+          console.error(`Received error while publishing: ${error.message}`);
+          process.exitCode = 1;
+        }
+    }
+
+    if (req.session.gameId) {
+        console.log('reloading game ' + req.session.gameId);
+        socket.emit('reset', req.session.color);
+        subscribe();
+    }
+
     socket.on('start', color => {
         req.session.gameId = crypto.randomUUID();
         req.session.color = color;
         req.session.save();
         console.log('starting game ' + req.session.gameId + ', playing as ' + color);
-
-        // listen for changes
-        const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
-        unsubscribe = query.onSnapshot((snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === 'added') {
-                    socket.emit('position', { 'fen' : change.doc.data().fen, 'lastMove' : change.doc.data().lastMove } );
-                }
-            });
-        });
+        subscribe();
 
         // initial setup
         const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -82,26 +79,11 @@ module.exports = (io, socket) => {
             return;
         }
 
-        moveRandomly(position.fen).then((p) => {
-            db.collection('one-player-positions').add({
-                gameId: req.session.gameId,
-                timestamp: Firestore.Timestamp.fromDate(new Date()),
-                fen: p.fen,
-                lastMove: p.lastMove
-            });
-        });         
+        setTimeout(() => publish(position.fen), 250);
     });
 
     socket.on('computerMove', (position) => {
-
-        moveRandomly(position.fen).then((p) => {
-            db.collection('one-player-positions').add({
-                gameId: req.session.gameId,
-                timestamp: Firestore.Timestamp.fromDate(new Date()),
-                fen: p.fen,
-                lastMove: p.lastMove
-            });
-        });         
+        setTimeout(() => publish(position.fen), 250);
     });
 
     socket.on('disconnect', () => {

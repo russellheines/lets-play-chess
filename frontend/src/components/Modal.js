@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
+import { Modal } from 'bootstrap';
+
 import { ReactComponent as WhiteKing } from '../images/lichess/wK.svg';
 import { ReactComponent as BlackKing } from '../images/lichess/bK.svg';
 import { ReactComponent as WhiteBlackKing } from '../images/lichess/wbK.svg';
-
-import { Modal } from 'bootstrap';
 
 function MyModal(props) {
 

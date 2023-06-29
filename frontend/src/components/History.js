@@ -31,17 +31,18 @@ function History(props) {
         scrollIntoView();
     });
 
-    const firstStyle = props.time !== 0 ? "historyBtn" : "historyBtn disabled";
-    const previousStyle = firstStyle;
+    const hasPreviousMove = props.time !== -1 && props.time !== 0; 
+    const hasNextMove = props.time !== -1 && props.time !== props.moves.length;
 
-    const nextStyle = props.time !== props.moves.length ? "historyBtn" : "historyBtn disabled";
+    const firstStyle = hasPreviousMove ? "historyBtn" : "historyBtn disabled";
+    const previousStyle = firstStyle;
+    const nextStyle = hasNextMove ? "historyBtn" : "historyBtn disabled";
     const lastStyle = nextStyle
 
-    const first = props.time !== 0 ? props.handleFirst : null;
-    const previous = props.time !== 0 ? props.handlePrevious : null;
-
-    const next = props.time !== props.moves.length  ? props.handleNext : null;
-    const last = props.time !== props.moves.length  ? props.handleLast : null;
+    const first = hasPreviousMove ? props.handleFirst : null;
+    const previous = hasPreviousMove ? props.handlePrevious : null;
+    const next = hasNextMove ? props.handleNext : null;
+    const last = hasNextMove ? props.handleLast : null;
 
     const items = [];
 
