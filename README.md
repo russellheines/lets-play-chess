@@ -47,4 +47,6 @@ UI:
 * https://create-react-app.dev/
 * https://getbootstrap.com/
 * https://blog.hubspot.com/website/react-bootstrap-css
+* https://fontawesome.com/icons/chess?f=classic&s=solid
+* https://favicon.io/favicon-converter/
 

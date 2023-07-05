@@ -9,7 +9,7 @@ import Board from "./Board";
 import History from "./History";
 import Controls from "./Controls";
 import Captured from "./Captured";
-import MyModal from "./Modal";
+import LetsPlayModal from "./Modal";
 
 /*export const socket = io("http://localhost:3001", {
     withCredentials: true,
@@ -200,6 +200,12 @@ function OnePlayer() {
 		setChooseSide(true);
 	}
 
+	function handleDismissModal() {
+		setChooseSide(false);
+		setYouWon(false);
+		setYouLost(false);
+	}
+
 	function startNewGame(color) {
 		setColor(color);
 		setOrientation(color);
@@ -320,13 +326,14 @@ function OnePlayer() {
 				</div>
 			</div>
 			}
-			<MyModal
+			<LetsPlayModal
 				chooseSide={chooseSide}
 				youWon={youWon}
 				youLost={youLost}
 				handlePlayAsWhite={handlePlayAsWhite}
 				handlePlayAsBlack={handlePlayAsBlack}
 				handlePlayAsRandom={handlePlayAsRandom}
+				handleDismissModal={handleDismissModal}
 			/>
 		</>
   	);

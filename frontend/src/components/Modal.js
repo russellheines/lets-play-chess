@@ -6,28 +6,37 @@ import { ReactComponent as WhiteKing } from '../images/lichess/wK.svg';
 import { ReactComponent as BlackKing } from '../images/lichess/bK.svg';
 import { ReactComponent as WhiteBlackKing } from '../images/lichess/wbK.svg';
 
-function MyModal(props) {
+/**
+ * Based on examples from https://getbootstrap.com/docs/5.3/components/modal/.
+ * 
+ * NOTE: handleDismissModal() is used to clear state variables if the user clicks outside of the modal
+ */
+function LetsPlayModal(props) {
 
 	useEffect(() => {
-		var myModal = new Modal(document.getElementById("exampleModal"));
-		if (props.chooseSide === true || props.youWon === true|| props.youLost === true) {
-			myModal.show();
+		const letsPlayModalEl = document.getElementById('letsPlayModal');
+		const letsPlayModal = new Modal(letsPlayModalEl);
+		if (props.chooseSide || props.youWon || props.youLost) {
+			letsPlayModal.show();
+			letsPlayModalEl.addEventListener('hidden.bs.modal', event => {
+				props.handleDismissModal();
+			});
 		}
-	}, [props.chooseSide, props.youWon, props.youLost]);
+	}, [props]);
 
 	const title = props.chooseSide === true ? "Let's play!" : props.youWon === true ? "You won!" : "You lost!";
 
 	return (
 		<>
-			<div className="modal" id="exampleModal" tabIndex="-1">
-				<div className="modal-dialog">
+			<div className="modal fade" id="letsPlayModal" tabIndex="-1">
+				<div className="modal-dialog modal-dialog-centered">
 					<div className="modal-content">
 						<div className="modal-header">
-							<h5 className="modal-title">{title}</h5>
+							<h1 className="modal-title fs-5">{title}</h1>
 							<button type="button" className="btn-close" data-bs-dismiss="modal"></button>
 						</div>
 						<div className="modal-body">
-							<p>Choose a side to play again:</p>
+							<p>Choose a side:</p>
 							<div className="modalSquares">
 								<div className="modalSquare">
 									<BlackKing onClick={props.handlePlayAsBlack} data-bs-dismiss="modal"/>
@@ -47,4 +56,4 @@ function MyModal(props) {
 	);
 }
 
-export default MyModal;
+export default LetsPlayModal;
