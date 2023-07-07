@@ -29,7 +29,7 @@ map.set('P', <WhitePawn/>);
 
 function Square(props) {
 
-    const image = map.get(props.piece);
+    const svg = map.get(props.piece);
 
     const styles = ["square"];
     styles.push(props.shade);
@@ -49,10 +49,14 @@ function Square(props) {
     else if ((props.inCheck === 1) && (props.piece === 'k')) {
         styles.push("check");
     }
-        
+
     return (
         <div className={styles.join(" ")} onClick={props.handleClickSquare}>
-            {image}
+            {svg}
+            {props.orientation === 0 && props.col === 7 && <div className="rank">{8 - props.row}</div>}
+            {props.orientation === 1 && props.col === 0 && <div className="rank">{8 - props.row}</div>}
+            {props.orientation === 0 && props.row === 7 && <div className="file">{String.fromCharCode(97 + props.col)}</div>}
+            {props.orientation === 1 && props.row === 0 && <div className="file">{String.fromCharCode(97 + props.col)}</div>}
          </div>
     );
 }

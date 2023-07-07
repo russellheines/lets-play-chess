@@ -144,13 +144,8 @@
 
 .square {
     width: 12.5%;
-    padding-top: 12.5%;  /* https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
+    aspect-ratio: 1 / 1;
     position: relative;
-}
-.square > * {
-    position: absolute;
-    top: 0;
-    left: 0;
 }
 .light {
     background-color: rgb(240, 217, 181);
@@ -172,6 +167,30 @@
 }
 .check {
     background-image: radial-gradient(ellipse at center, red 0%, #e70000 25%, rgba(169,0,0,0) 89%, rgba(158,0,0,0) 100%);
+}
+.square > * {
+    position: absolute;
+}
+.square > svg {
+    top: 0;
+    left: 0;
+}
+.square > .rank, .square > .file {
+    font-size: 12px;
+}
+.square > .rank {
+    top: 0;
+    right: 2px;
+}
+.square > .file {
+    bottom: 0;
+    left: 2px;
+}
+.square.light > .rank, .square.light > .file {
+    color: rgb(181, 136, 99);
+}
+.square.dark > .rank, .square.dark > .file {
+    color: rgb(240, 217, 181);
 }
 
 /* Captured pieces */

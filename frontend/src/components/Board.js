@@ -52,8 +52,11 @@ function Board(props) {
                     selected={(props.selected != null) && (props.selected.row === row) && (props.selected.col === col)}
                     lastFrom={((props.lastFrom != null) && (props.lastFrom.row === row) && (props.lastFrom.col === col))}
                     lastTo={((props.lastTo != null) && (props.lastTo.row === row) && (props.lastTo.col === col))}
-                    handleClickSquare={() => props.handleClickSquare(row, col)}  
-	                inCheck={props.inCheck}          
+                    inCheck={props.inCheck}
+                    handleClickSquare={() => props.handleClickSquare(row, col)}
+                    row={row}
+                    col={col}
+                    orientation={props.orientation}
                 />
             squares.push(square);
         }

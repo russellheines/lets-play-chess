@@ -50,3 +50,9 @@ UI:
 * https://fontawesome.com/icons/chess?f=classic&s=solid
 * https://favicon.io/favicon-converter/
 
+Server:
+
+* https://cloud.google.com/run/docs/tutorials/websockets
+* https://cloud.google.com/run/docs/triggering/websockets
+* https://socket.io/
+* https://nodejs.org/en/docs/guides/nodejs-docker-webapp
