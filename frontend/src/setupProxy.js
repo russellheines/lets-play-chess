@@ -23,6 +23,13 @@ module.exports = function(app) {
     })
   );
   app.use(
+    '/clear',
+    createProxyMiddleware({
+      target: 'http://localhost:3001',
+      changeOrigin: true,
+    })
+  );
+  app.use(
     createProxyMiddleware('/socket.io', {
       target: 'http://localhost:3001',
       ws: true

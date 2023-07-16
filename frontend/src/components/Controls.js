@@ -8,7 +8,7 @@ function Controls(props) {
 
     return (
         <div className="historyBtns">
-            <div className="historyBtn" onClick={props.handleChangeOrientation}><LoopIcon/></div>
+            <div className="historyBtn" onClick={() => props.dispatch({type: "orientation"})}><LoopIcon/></div>
             <div className="historyBtn" onClick={props.handleNewGame}><AddIcon/></div>
             <div className="historyBtn"><MoreHorizIcon/></div>
         </div>

@@ -1,17 +1,17 @@
 import React from 'react'
 
-import { ReactComponent as BlackRook } from '../images/wikipedia/rdt45.svg';
-import { ReactComponent as BlackKnight } from '../images/wikipedia/ndt45.svg';
-import { ReactComponent as BlackBishop } from '../images/wikipedia/bdt45.svg';
-import { ReactComponent as BlackQueen } from '../images/wikipedia/qdt45.svg';
-import { ReactComponent as BlackKing } from '../images/wikipedia/kdt45.svg';
-import { ReactComponent as BlackPawn } from '../images/wikipedia/pdt45.svg';
-import { ReactComponent as WhiteRook } from '../images/wikipedia/rlt45.svg';
-import { ReactComponent as WhiteKnight } from '../images/wikipedia/nlt45.svg';
-import { ReactComponent as WhiteBishop } from '../images/wikipedia/blt45.svg';
-import { ReactComponent as WhiteQueen } from '../images/wikipedia/qlt45.svg';
-import { ReactComponent as WhiteKing } from '../images/wikipedia/klt45.svg';
-import { ReactComponent as WhitePawn } from '../images/wikipedia/plt45.svg';
+import { ReactComponent as BlackRook } from '../assets/wikipedia/rdt45.svg';
+import { ReactComponent as BlackKnight } from '../assets/wikipedia/ndt45.svg';
+import { ReactComponent as BlackBishop } from '../assets/wikipedia/bdt45.svg';
+import { ReactComponent as BlackQueen } from '../assets/wikipedia/qdt45.svg';
+import { ReactComponent as BlackKing } from '../assets/wikipedia/kdt45.svg';
+import { ReactComponent as BlackPawn } from '../assets/wikipedia/pdt45.svg';
+import { ReactComponent as WhiteRook } from '../assets/wikipedia/rlt45.svg';
+import { ReactComponent as WhiteKnight } from '../assets/wikipedia/nlt45.svg';
+import { ReactComponent as WhiteBishop } from '../assets/wikipedia/blt45.svg';
+import { ReactComponent as WhiteQueen } from '../assets/wikipedia/qlt45.svg';
+import { ReactComponent as WhiteKing } from '../assets/wikipedia/klt45.svg';
+import { ReactComponent as WhitePawn } from '../assets/wikipedia/plt45.svg';
 
 const map = new Map();
 map.set('r', <BlackRook/>);

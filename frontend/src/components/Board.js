@@ -37,6 +37,7 @@ function fen2matrix(fen) {
     return matrix;
 }
 
+
 function Board(props) {
 
     const matrix = fen2matrix(props.fen);

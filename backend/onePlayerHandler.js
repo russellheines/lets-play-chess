@@ -1,27 +1,42 @@
 const crypto = require('crypto');
 
-const { PubSub } = require('@google-cloud/pubsub');
 const { Firestore } = require('@google-cloud/firestore');
+const { PubSub } = require('@google-cloud/pubsub');
 
 const { Chess } = require('chess.js');
 
-const db = require('./db');
-
-const pubSubClient = new PubSub();
+const firestore = new Firestore();
+const pubsub = new PubSub();
 
 module.exports = (io, socket) => {
     console.log('user connected');
     const req = socket.request;
 
     function unsubscribe() {}
-
     function subscribe() {
-        // listen for changes
-        const query = db.collection('one-player-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
+        const query = firestore.collection('lets-play-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
         unsubscribe = query.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
+                //console.log("snapshot.size: " + snapshot.size)
+                //console.log("change.oldIndex: " + change.oldIndex)
+                //console.log("change.newIndex: " + change.newIndex)
                 if (change.type === 'added') {
                     socket.emit('position', { 'fen' : change.doc.data().fen, 'lastMove' : change.doc.data().lastMove } );
+                }
+            });
+        });
+    }
+
+    function unsubscribeChallenges() {}
+    function subscribeChallenges() {
+        const query = firestore.collection('lets-play-challenges').where("gameId", "==", req.session.gameId).orderBy('timestamp');
+        unsubscribeChallenges = query.onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                //console.log("snapshot.size: " + snapshot.size)
+                //console.log("change.oldIndex: " + change.oldIndex)
+                //console.log("change.newIndex: " + change.newIndex)
+                if ((change.type === 'modified') && (change.doc.data().accepted === true)) {
+                    socket.emit('accepted', req.session.color);
                 }
             });
         });
@@ -30,16 +45,12 @@ module.exports = (io, socket) => {
     function publish(fen) {
         const data = JSON.stringify({gameId: req.session.gameId, fen: fen});
         const dataBuffer = Buffer.from(data);
-        console.log(data);
 
         try {
-          const messageId = pubSubClient
-            .topic("random-topic")
-            .publishMessage({data: dataBuffer});
-          console.log(`Message ${messageId} published.`);
-        } catch (error) {
-          console.error(`Received error while publishing: ${error.message}`);
-          process.exitCode = 1;
+            pubsub.topic("random-topic").publishMessage({data: dataBuffer});
+        }
+        catch (error) {
+            console.error(`Received error while publishing: ${error.message}`);
         }
     }
 
@@ -49,25 +60,28 @@ module.exports = (io, socket) => {
         subscribe();
     }
 
-    socket.on('start', color => {
+    socket.on('start', (numberOfPlayers, color) => {
         req.session.gameId = crypto.randomUUID();
         req.session.color = color;
         req.session.save();
         console.log('starting game ' + req.session.gameId + ', playing as ' + color);
         subscribe();
 
-        // initial setup
         const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-        db.collection('one-player-positions').add({
+        firestore.collection('lets-play-positions').add({
             gameId: req.session.gameId,
             timestamp: Firestore.Timestamp.fromDate(new Date()),
             fen: initial
         });
+
+        if ((color === 1) && (numberOfPlayers === 1)) {
+            setTimeout(() => publish(initial), 250);
+        }
     });
 
     socket.on('position', (position) => {
 
-        db.collection('one-player-positions').add({
+        firestore.collection('lets-play-positions').add({
             gameId: req.session.gameId,
             timestamp: Firestore.Timestamp.fromDate(new Date()),
             fen: position.fen,
@@ -75,19 +89,66 @@ module.exports = (io, socket) => {
         });
 
         const chessjs = new Chess(position.fen);
-        if (chessjs.isCheckmate()) {
+        if (chessjs.isCheckmate() || chessjs.isDraw()) {
             return;
         }
 
-        setTimeout(() => publish(position.fen), 250);
+        if (position.numberOfPlayers === 1) {
+            setTimeout(() => publish(position.fen), 250);
+        }
     });
 
-    socket.on('computerMove', (position) => {
-        setTimeout(() => publish(position.fen), 250);
+    socket.on('challenge', color => {
+        req.session.gameId = crypto.randomUUID();
+        req.session.color = color;
+        req.session.save();
+        console.log('starting challenge ' + req.session.gameId + ', playing as ' + color);
+        subscribeChallenges();
+
+        firestore.collection('lets-play-challenges').doc(req.session.gameId).set({
+            gameId: req.session.gameId,
+            challengingColor: color,
+            acceptingColor: color === 1 ? 0 : 1,
+            accepted: false,
+            timestamp: Firestore.Timestamp.fromDate(new Date())
+        });
+
+        socket.emit('waiting', req.session.gameId);
+
+        subscribe();
+    });
+
+    socket.on('accept', gameId => {
+        challengeRef = firestore.collection('lets-play-challenges').doc(gameId);
+        challengeRef.update({
+            accepted: true
+        });
+
+        challengeRef.get()
+            .then(doc => {
+                req.session.gameId = doc.data().gameId;
+                req.session.color = doc.data().acceptingColor;
+                req.session.save();
+        
+                console.log('accepting challenge ' + req.session.gameId + ', playing as ' + req.session.color );
+
+                subscribe();
+
+                const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+                firestore.collection('lets-play-positions').add({
+                    gameId: req.session.gameId,
+                    timestamp: Firestore.Timestamp.fromDate(new Date()),
+                    fen: initial
+                });
+
+                socket.emit('accepted', req.session.color);
+
+            });
     });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');        
         unsubscribe();
+        unsubscribeChallenges();
     });
 }

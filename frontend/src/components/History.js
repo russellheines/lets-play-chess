@@ -39,10 +39,10 @@ function History(props) {
     const nextStyle = hasNextMove ? "historyBtn" : "historyBtn disabled";
     const lastStyle = nextStyle
 
-    const first = hasPreviousMove ? props.handleFirst : null;
-    const previous = hasPreviousMove ? props.handlePrevious : null;
-    const next = hasNextMove ? props.handleNext : null;
-    const last = hasNextMove ? props.handleLast : null;
+    const first = hasPreviousMove ? () => props.dispatch({type: "first"}) : null;
+    const previous = hasPreviousMove ? () => props.dispatch({type: "previous"}) : null;
+    const next = hasNextMove ? () => props.dispatch({type: "next"}) : null;
+    const last = hasNextMove ? () => props.dispatch({type: "last"}) : null;
 
     const items = [];
 
@@ -63,9 +63,9 @@ function History(props) {
         items.push(
             <div key={key++} className="historyMoveContainer">
                 <div className="historyMoveNumber">{i+1}</div>
-                <div className={styleWhite} onClick={() => props.handleClickMove(indexWhite)}>{sanWhite}</div>
+                <div className={styleWhite} onClick={() => props.dispatch({type: "index", index: indexWhite})}>{sanWhite}</div>
                 {indexBlack < props.moves.length &&
-                    <div className={styleBlack} onClick={() => props.handleClickMove(indexBlack)}>{sanBlack}</div>
+                    <div className={styleBlack} onClick={() => props.dispatch({type: "index", index: indexBlack})}>{sanBlack}</div>
                 }                
             </div>
         );

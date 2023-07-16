@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { ReactComponent as CapturedRook } from '../images/wikipedia/rgt45.svg';
-import { ReactComponent as CapturedKnight } from '../images/wikipedia/ngt45.svg';
-import { ReactComponent as CapturedBishop } from '../images/wikipedia/bgt45.svg';
-import { ReactComponent as CapturedQueen } from '../images/wikipedia/qgt45.svg';
-import { ReactComponent as CapturedPawn } from '../images/wikipedia/pgt45.svg';
+import { ReactComponent as CapturedRook } from '../assets/wikipedia/rgt45.svg';
+import { ReactComponent as CapturedKnight } from '../assets/wikipedia/ngt45.svg';
+import { ReactComponent as CapturedBishop } from '../assets/wikipedia/bgt45.svg';
+import { ReactComponent as CapturedQueen } from '../assets/wikipedia/qgt45.svg';
+import { ReactComponent as CapturedPawn } from '../assets/wikipedia/pgt45.svg';
 
 /*
  * Returns a list of pieces captured by the specified color, which can be confusing when pawns are promoted.

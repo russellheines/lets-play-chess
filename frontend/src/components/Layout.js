@@ -33,10 +33,10 @@ function Layout(props) {
                   Play
                 </button>
                 <ul className="dropdown-menu">
-                  <Link to="/onePlayer" className="nav-link" >
+                  <Link to="/play" className="nav-link" onClick={props.handleOnePlayer}>
                     <li className="dropdown-item" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">One player</li>
                   </Link>
-                  <Link to="/twoPlayers" className="nav-link" >
+                  <Link to="/play" className="nav-link" onClick={props.handleTwoPlayers}>
                     <li className="dropdown-item" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">Two players</li>
                   </Link>
                 </ul>

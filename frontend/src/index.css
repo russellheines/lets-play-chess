@@ -251,13 +251,9 @@
 
 /* Modals */
 
-.modalSquares {
-    display: flex;
-    justify-content: center;
-}
 .modalSquare {
     width: 20%;
-    padding-top: 20%;  /* https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
+    aspect-ratio: 1 / 1;
     position: relative;
     background-color: rgb(243, 243, 243);
     box-shadow:
