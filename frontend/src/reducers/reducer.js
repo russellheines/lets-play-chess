@@ -18,7 +18,7 @@ export const initialState = {
     youWon: false,
     youLost: false,
     waitingForAccept: false,
-    gameId: null
+    challengeId: null
 };
 
 export function reducer(state, action) {
@@ -54,7 +54,7 @@ export function reducer(state, action) {
             ...state,
             chooseSide: false,
             waitingForAccept: true,
-            gameId: action.gameId
+            challengeId: action.challengeId
         };
     }
     else if (action.type === 'accepted') {

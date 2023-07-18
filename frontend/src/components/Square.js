@@ -29,7 +29,7 @@ map.set('P', <WhitePawn/>);
 
 function Square(props) {
 
-    const svg = map.get(props.piece);
+    const svg = props.piece !== null ? map.get(props.piece.color === 'w' ? props.piece.type.toUpperCase() : props.piece.type ) : null;
 
     const styles = ["square"];
     styles.push(props.shade);

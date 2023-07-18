@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useReducer } from 'react';
 
 import { initialState, reducer } from "./reducers/reducer";
+import { getSquare } from "./utils/utils";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -42,8 +43,8 @@ function App() {
 			dispatch({type: "reset", color: color});
 		});
 
-		socket.on("waiting", gameId => {
-			dispatch({type: "waiting", gameId: gameId});
+		socket.on("waiting", challengeId => {
+			dispatch({type: "waiting", challengeId: challengeId});
 		});
 
 		socket.on("accepted", color => {
@@ -59,7 +60,12 @@ function App() {
 	}, []);
 
 	function handleClickSquare(row, col) {
-		const sq = String.fromCharCode(97 + col) + (8 - row);  // 97 = 'a'
+
+		if (state.time < 0) {
+			return;
+		}
+
+		const sq = getSquare(row, col);
 		//console.log("row=" + row + ", col=" + col, "sq=" + sq);
 
     	const chessjs = new Chess(state.fen[state.time]);
@@ -92,8 +98,8 @@ function App() {
 			dispatch({type: "clearSelection"});
 		}
 		else {
-			let from = String.fromCharCode(97 + state.selected.col) + (8 - state.selected.row);  // 97 = 'a'
-			let to = String.fromCharCode(97 + col) + (8 - row);  // 97 = 'a'
+			let from = getSquare(state.selected.row, state.selected.col);
+			let to = getSquare(row, col);
 			console.log("from=" + from + ", to=" + to);
 
 			try {

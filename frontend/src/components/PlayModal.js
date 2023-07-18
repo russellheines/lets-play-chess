@@ -19,12 +19,19 @@ import { ReactComponent as WhiteBlackKing } from '../assets/lichess/wbK.svg';
  */
 function PlayModal(props) {
 
-	const [challengeKey, setChallengeKey] = useState("");
+	const numberOfPlayers = props.state.numberOfPlayers;
+	const chooseSide = props.state.chooseSide;
+	const youWon = props.state.youWon;
+	const youLost = props.state.youLost;
+	const waitingForAccept = props.state.waitingForAccept;
+	const challengeId = props.state.challengeId;
+	
+	const [challengeKey, setChallengeKey] = useState("");  // TODO: rename
 	
 	useEffect(() => {
 		const playModalEl = document.getElementById("playModal");
 		const playModal = Modal.getOrCreateInstance(playModalEl);
-		if (props.chooseSide || props.youWon || props.youLost || props.waitingForAccept) {
+		if (chooseSide || youWon || youLost || waitingForAccept) {
 			playModal.show();
 			playModalEl.addEventListener("show.bs.modal", event => {
 				setChallengeKey("");
@@ -44,22 +51,21 @@ function PlayModal(props) {
 		const playModal = Modal.getOrCreateInstance(playModalEl);
 		playModal.hide();
 		props.handleAccept(challengeKey);
-		//alert(`The namee you entered was: ${challengeKey}`);
 	}
 
 	let title = "Let's Play!";
-	if (props.youWon) {
+	if (youWon) {
 		title = "You won!";
 	}
-	else if (props.youLost) {
+	else if (youLost) {
 		title = "You lost!";
 	}
-	else if (props.waitingForAccept) {
+	else if (waitingForAccept) {
 		title = "Waiting!";
 	}
 
 	let instructions = "Choose a side:";
-	if (props.numberOfPlayers === 2) {
+	if (numberOfPlayers === 2) {
 		instructions = "To challenge a friend, first choose a side:";
 	}
 
@@ -76,26 +82,26 @@ function PlayModal(props) {
 							<p>{instructions}</p>
 								<div className="d-flex justify-content-center">
 									<div className="modalSquare">
-										{props.numberOfPlayers === 1 ?
+										{numberOfPlayers === 1 ?
 											<BlackKing onClick={() => props.handlePlayAs(1)} data-bs-dismiss="modal"/> :
 											<BlackKing onClick={() => props.handleChallenge(1)}/>
 										}
 									</div>
 									<div className="modalSquare">
-										{props.numberOfPlayers === 1 ?
+										{numberOfPlayers === 1 ?
 											<WhiteBlackKing onClick={() => props.handlePlayAs(Math.floor(Math.random() * 2))} data-bs-dismiss="modal"/> :
 											<WhiteBlackKing onClick={() => props.handleChallenge(Math.floor(Math.random() * 2))}/>
 										}
 									</div>
 									<div className="modalSquare">
-										{props.numberOfPlayers === 1 ?
+										{numberOfPlayers === 1 ?
 											<WhiteKing onClick={() => props.handlePlayAs(0)} data-bs-dismiss="modal"/> :
 											<WhiteKing onClick={() => props.handleChallenge(0)}/>
 										}
 									</div>
 								</div>
 							<p />
-							{props.numberOfPlayers === 2 &&
+							{numberOfPlayers === 2 &&
 							<>
 								<p>To accept a challenge:</p>
 								<div className="row">
@@ -107,7 +113,7 @@ function PlayModal(props) {
 											className="form-control"
 											placeholder="Enter challenge key"
 											autoComplete="off"
-											value={props.gameId != null ? props.gameId : challengeKey}
+											value={challengeId != null ? challengeId : challengeKey}
 											onChange={(e) => setChallengeKey(e.target.value)}
 										/>									
 									</form>

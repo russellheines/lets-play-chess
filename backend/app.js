@@ -40,9 +40,9 @@ app.get('/*', function (req, res) {
 
 io.engine.use(sessionMiddleware);
 
-const registerOnePlayerHandlers = require("./onePlayerHandler");
+const registerChessHandlers = require("./chessHandler");
 io.on("connection", (socket) => {
-  registerOnePlayerHandlers(io, socket);
+  registerChessHandlers(io, socket);
 });
 
 const port = parseInt(process.env.PORT) || 3001;

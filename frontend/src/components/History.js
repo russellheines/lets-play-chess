@@ -1,4 +1,6 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
+
+import { useMediaQuery } from 'react-responsive'
 
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -27,12 +29,17 @@ function scrollIntoView() {
 
 function History(props) {
 
+    const time = props.state.time;
+    const moves = props.state.moves;
+
+	const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
+
     useEffect(() => {
         scrollIntoView();
     });
 
-    const hasPreviousMove = props.time !== -1 && props.time !== 0; 
-    const hasNextMove = props.time !== -1 && props.time !== props.moves.length;
+    const hasPreviousMove = time !== -1 && time !== 0; 
+    const hasNextMove = time !== -1 && time !== moves.length;
 
     const firstStyle = hasPreviousMove ? "historyBtn" : "historyBtn disabled";
     const previousStyle = firstStyle;
@@ -47,37 +54,39 @@ function History(props) {
     const items = [];
 
     let key = 0;
-    for (let i = 0; i < props.moves.length / 2; i++) {
+    for (let i = 0; i < moves.length / 2; i++) {
 
         const indexWhite = i * 2;
         const indexBlack = i * 2 + 1;
 
-        const styleWhite = indexWhite !== props.time-1 ? "historyMove" : "historyMove current";
-        const styleBlack = indexBlack !== props.time-1 ? "historyMove" : "historyMove current";
+        const styleWhite = indexWhite !== time-1 ? "historyMove" : "historyMove current";
+        const styleBlack = indexBlack !== time-1 ? "historyMove" : "historyMove current";
 
-        const sanWhite = props.moves[indexWhite].replaceAll('-',String.fromCharCode(8209));  // non-breaking hyphen
-        const sanBlack = indexBlack < props.moves.length ?
-            props.moves[indexBlack].replaceAll('-',String.fromCharCode(8209)) :
+        const sanWhite = moves[indexWhite].replaceAll('-',String.fromCharCode(8209));  // non-breaking hyphen
+        const sanBlack = indexBlack < moves.length ?
+            moves[indexBlack].replaceAll('-',String.fromCharCode(8209)) :
             null;
 
         items.push(
-            <div key={key++} className="historyMoveContainer">
+            <div key={key++} className="d-flex">
                 <div className="historyMoveNumber">{i+1}</div>
                 <div className={styleWhite} onClick={() => props.dispatch({type: "index", index: indexWhite})}>{sanWhite}</div>
-                {indexBlack < props.moves.length &&
+                {indexBlack < moves.length &&
                     <div className={styleBlack} onClick={() => props.dispatch({type: "index", index: indexBlack})}>{sanBlack}</div>
                 }                
             </div>
         );
     }
 
-    if (props.portrait) {
+    if (isPortrait) {
         return (
-             <div className="history">
+             <div className="history d-flex">
                 <div className={firstStyle} onClick={first}><FirstPageIcon/></div>
                 <div className={previousStyle} onClick={previous}><NavigateBeforeIcon/></div>
-                <div className="historyMoves">
-                    {items}
+                <div className="flex-grow-1 box-shadow-inset" style={{overflowX: "hidden"}}>
+                    <div className="d-flex">
+                        {items}
+                    </div>
                 </div>
                 <div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
                <div className={lastStyle} onClick={last}><LastPageIcon/></div> 
@@ -93,8 +102,10 @@ function History(props) {
                     <div className={nextStyle} onClick={next}><NavigateNextIcon/></div>
                	    <div className={lastStyle} onClick={last}><LastPageIcon/></div>                    
                 </div>
-       	        <div className="historyMoves">
-                    {items}
+       	        <div className="historyMoves flex-grow-1" style={{overflowY: "auto"}}>
+                    <div className="d-flex flex-column">
+                        {items}
+                    </div>
                 </div>
             </div>
         )

@@ -105,32 +105,34 @@ module.exports = (io, socket) => {
         console.log('starting challenge ' + req.session.gameId + ', playing as ' + color);
         subscribeChallenges();
 
-        firestore.collection('lets-play-challenges').doc(req.session.gameId).set({
+        const challengeId = req.session.gameId.substring(0,8);
+
+        firestore.collection('lets-play-challenges').add({
             gameId: req.session.gameId,
+            numberOfPlayers: 2,
+            challengeId: challengeId,
             challengingColor: color,
             acceptingColor: color === 1 ? 0 : 1,
             accepted: false,
             timestamp: Firestore.Timestamp.fromDate(new Date())
         });
 
-        socket.emit('waiting', req.session.gameId);
+        socket.emit('waiting', challengeId);
 
         subscribe();
     });
 
-    socket.on('accept', gameId => {
-        challengeRef = firestore.collection('lets-play-challenges').doc(gameId);
-        challengeRef.update({
-            accepted: true
-        });
+    socket.on('accept', challengeId => {
+        firestore.collection("lets-play-challenges").where("challengeId", "==", challengeId).limit(1).get()
+            .then(query => {
+                const doc = query.docs[0];
+                doc.ref.update({ accepted: true});
 
-        challengeRef.get()
-            .then(doc => {
                 req.session.gameId = doc.data().gameId;
                 req.session.color = doc.data().acceptingColor;
                 req.session.save();
-        
-                console.log('accepting challenge ' + req.session.gameId + ', playing as ' + req.session.color );
+    
+                console.log('accepting challenge ' + challengeId);
 
                 subscribe();
 
@@ -141,9 +143,8 @@ module.exports = (io, socket) => {
                     fen: initial
                 });
 
-                socket.emit('accepted', req.session.color);
-
-            });
+                socket.emit('accepted', req.session.color);    
+            });        
     });
 
     socket.on('disconnect', () => {

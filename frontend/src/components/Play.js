@@ -17,83 +17,67 @@ function Play(props) {
 			{isPortrait &&
 			<div className="portrait">
 				<History
-					portrait={true}
-					moves={props.moves}
-					time={props.time}
+					state={props.state}
+					dispatch={props.dispatch}
 					handleClickMove={props.handleClickMove}
 					handleChangeOrientation={props.handleChangeOrientation}
 					handleNewGame={props.handleNewGame}
 				/>
 				<Captured
-					fen={props.time >= 0 ? props.fen[props.time] : []}
-					color={props.orientation === 1 ? "w" : "b"}
+					state={props.state}
+					color={props.state.orientation === 1 ? "w" : "b"}
 				/>
 				<Board
-					fen={props.fen[props.time]}
-					orientation={props.orientation}
-					selected={props.selected}
-					lastFrom={props.lastFrom[props.time]}
-					lastTo={props.lastTo[props.time]}
+					state={props.state}
+					dispatch={props.dispatch}
 					handleClickSquare={props.handleClickSquare}
-					inCheck={props.inCheck[props.time]}
 				/>
 				<Controls
 					handleChangeOrientation={props.handleChangeOrientation}
 					handleNewGame={props.handleNewGame}
 				/>
 				<Captured
-					fen={props.time >= 0 ? props.fen[props.time] : []}
-					color={props.orientation === 0 ? "w" : "b"}
+					state={props.state}
+					color={props.state.orientation === 0 ? "w" : "b"}
 				/>
 			</div>
 			}
 			{!isPortrait &&
 			<div className="landscape">
 				<Board
-					fen={props.state.fen[props.state.time]}
-					orientation={props.state.orientation}
-					selected={props.state.selected}
-					lastFrom={props.state.lastFrom[props.state.time]}
-					lastTo={props.state.lastTo[props.state.time]}
-					handleClickSquare={props.handleClickSquare}
-					inCheck={props.state.inCheck[props.state.time]}
+					state={props.state}
 					dispatch={props.dispatch}
+					handleClickSquare={props.handleClickSquare}
 				/>
 				<div className="panel">
 					<Captured
-						fen={props.state.time >= 0 ? props.state.fen[props.state.time] : []}
+						state={props.state}
 						color={props.state.orientation === 1 ? "w" : "b"}
 					/>
 					<div className="box-shadow">
 						<History
-							moves={props.state.moves}
-							time={props.state.time}
+							state={props.state}
 							dispatch={props.dispatch}
 							handleNewGame={props.handleNewGame}
 						/>
 						<Controls
+							dispatch={props.dispatch}
 							handleChangeOrientation={props.handleChangeOrientation}
 							handleNewGame={props.handleNewGame}
-							dispatch={props.dispatch}
 						/>
 					</div>
 					<Captured
-						fen={props.state.time >= 0 ? props.state.fen[props.state.time] : []}
+						state={props.state}
 						color={props.state.orientation === 0 ? "w" : "b"}
 					/>
 				</div>
 			</div>
 			}
 			<PlayModal
-				numberOfPlayers={props.state.numberOfPlayers}
-				chooseSide={props.state.chooseSide}
-				youWon={props.state.youWon}
-				youLost={props.state.youLost}
-				waitingForAccept={props.state.waitingForAccept}
+				state={props.state}
 				handlePlayAs={props.handlePlayAs}
 				handleDismissModal={props.handleDismissModal}
 				handleChallenge={props.handleChallenge}
-				gameId={props.state.gameId}
 				handleAccept={props.handleAccept}
 			/>
 		</>

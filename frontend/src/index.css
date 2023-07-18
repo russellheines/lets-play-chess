@@ -1,54 +1,18 @@
-/*
- * Portrait:
- * 
- *   History
- *   Captured pieces
- *   Player information
- *   Board
- *   Player information
- *   Captured pieces
- *
- * Landscape:
- *
- *            Captured pieces
- *            Player information
- *   Board    History
- *            Player information
- *            Captured pieces
- */  
+/* Portrait */
 
- /* Portrait */
-
- .portrait {
-    width: 100%;
+.portrait {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
 }
-.portrait .history {
-    width: 98%;
-    display: flex;
-    flex-direction: row;
-}
-.portrait .historyMoves {
-	box-shadow: 0 4px 4px #cdc8c1 inset;
-    overflow-x: hidden;
-}
-.portrait .board {
-    width: 98%;
-}
-.portrait .historyBtns {
-    width: 98%;
-}
-.portrait .capturedContainer {
+.portrait > * {
     width: 98%;
 }
 
 /* Landscape */
 
 .landscape {
-    width: 100%;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -65,10 +29,6 @@
 }
 .landscape .historyMoves {
     height: 30vh;  /* make responsive */
-}
-.landscape .historyMoves {
-    flex-direction: column;
-    overflow-y: auto;
 }
 .landscape .historyMoveNumber {
     width: 20%;
@@ -87,6 +47,10 @@
         0 2px 2px 0 rgba(0, 0, 0, 0.14),
         0 3px 1px -2px rgba(0, 0, 0, 0.2),
         0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.box-shadow-inset {
+	box-shadow: 0 4px 4px #cdc8c1 inset;
 }
 
 /* History */
@@ -109,14 +73,6 @@
 .historyBtn:hover:not(.disabled) {
     background-color: rgb(137,178,91);
     color: rgb(255,255,255)
-}
-
-.historyMoves {
-    flex-grow: 1;
-	display: flex;
-}
-.historyMoveContainer {
-	display: flex;
 }
 .historyMoveNumber, .historyMove {
     padding: 4px;
