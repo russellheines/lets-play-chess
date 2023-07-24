@@ -72,16 +72,18 @@ module.exports = (io, socket) => {
     });
 
     socket.on('position', (position) => {
-        firestore.collection("lets-play-challenges").doc(req.session.gameId).get()
-            .then(doc => {
-                if (doc.exists) {
-                    const chessjs = new Chess();
-                    chessjs.loadPgn(doc.data().pgn);
-                    chessjs.move(position.lastMove);
 
-                    docRef.update({ pgn: chessjs.pgn()});
-                }
-            });
+        docRef = firestore.collection("lets-play-chess").doc(req.session.gameId);
+
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                const chessjs = new Chess();
+                chessjs.loadPgn(doc.data().pgn);
+                chessjs.move(position.lastMove);
+
+                docRef.update({ pgn: chessjs.pgn()});
+            }
+        });
 
         const chessjs = new Chess(position.fen);
         if (chessjs.isCheckmate() || chessjs.isDraw()) {
