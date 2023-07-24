@@ -14,16 +14,11 @@ module.exports = (io, socket) => {
 
     function unsubscribe() {}
     function subscribe() {
-        const query = firestore.collection('lets-play-positions').where("gameId", "==", req.session.gameId).orderBy('timestamp');
-        unsubscribe = query.onSnapshot((snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                //console.log("snapshot.size: " + snapshot.size)
-                //console.log("change.oldIndex: " + change.oldIndex)
-                //console.log("change.newIndex: " + change.newIndex)
-                if (change.type === 'added') {
-                    socket.emit('position', { 'fen' : change.doc.data().fen, 'lastMove' : change.doc.data().lastMove } );
-                }
-            });
+        unsubscribe = firestore.collection("lets-play-chess").doc(req.session.gameId)
+        .onSnapshot((doc) => {
+            if (doc.data()) {
+                socket.emit('pgn', doc.data().pgn );
+            }
         });
     }
 
@@ -32,9 +27,6 @@ module.exports = (io, socket) => {
         const query = firestore.collection('lets-play-challenges').where("gameId", "==", req.session.gameId).orderBy('timestamp');
         unsubscribeChallenges = query.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
-                //console.log("snapshot.size: " + snapshot.size)
-                //console.log("change.oldIndex: " + change.oldIndex)
-                //console.log("change.newIndex: " + change.newIndex)
                 if ((change.type === 'modified') && (change.doc.data().accepted === true)) {
                     socket.emit('accepted', req.session.color);
                 }
@@ -56,7 +48,7 @@ module.exports = (io, socket) => {
 
     if (req.session.gameId) {
         console.log('reloading game ' + req.session.gameId);
-        socket.emit('reset', req.session.color);
+        socket.emit('reload', req.session.color);
         subscribe();
     }
 
@@ -67,26 +59,29 @@ module.exports = (io, socket) => {
         console.log('starting game ' + req.session.gameId + ', playing as ' + color);
         subscribe();
 
-        const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-        firestore.collection('lets-play-positions').add({
+        const chessjs = new Chess();        
+        firestore.collection('lets-play-chess').doc(req.session.gameId).set({
             gameId: req.session.gameId,
             timestamp: Firestore.Timestamp.fromDate(new Date()),
-            fen: initial
+            pgn: chessjs.pgn()
         });
 
         if ((color === 1) && (numberOfPlayers === 1)) {
-            setTimeout(() => publish(initial), 250);
+            setTimeout(() => publish(chessjs.fen()), 250);
         }
     });
 
     socket.on('position', (position) => {
+        firestore.collection("lets-play-challenges").doc(req.session.gameId).get()
+            .then(doc => {
+                if (doc.exists) {
+                    const chessjs = new Chess();
+                    chessjs.loadPgn(doc.data().pgn);
+                    chessjs.move(position.lastMove);
 
-        firestore.collection('lets-play-positions').add({
-            gameId: req.session.gameId,
-            timestamp: Firestore.Timestamp.fromDate(new Date()),
-            fen: position.fen,
-            lastMove: position.lastMove
-        });
+                    docRef.update({ pgn: chessjs.pgn()});
+                }
+            });
 
         const chessjs = new Chess(position.fen);
         if (chessjs.isCheckmate() || chessjs.isDraw()) {
@@ -123,7 +118,7 @@ module.exports = (io, socket) => {
     });
 
     socket.on('accept', challengeId => {
-        firestore.collection("lets-play-challenges").where("challengeId", "==", challengeId).limit(1).get()
+        firestore.collection("lets-play-challenges").where("challengeId", "==", challengeId).get()
             .then(query => {
                 const doc = query.docs[0];
                 doc.ref.update({ accepted: true});
@@ -136,11 +131,11 @@ module.exports = (io, socket) => {
 
                 subscribe();
 
-                const initial = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-                firestore.collection('lets-play-positions').add({
+                const chessjs = new Chess();        
+                firestore.collection('lets-play-chess').doc(req.session.gameId).set({
                     gameId: req.session.gameId,
                     timestamp: Firestore.Timestamp.fromDate(new Date()),
-                    fen: initial
+                    pgn: chessjs.pgn()
                 });
 
                 socket.emit('accepted', req.session.color);    

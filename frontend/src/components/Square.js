@@ -43,10 +43,10 @@ function Square(props) {
     if (props.lastTo) {
         styles.push("lastTo");
     }
-    if ((props.inCheck === 0) && (props.piece === 'K')) {
+    if ((props.inCheck === 0) && (props.piece.color === 'w') && (props.piece.type === 'k')) {
         styles.push("check");
     }
-    else if ((props.inCheck === 1) && (props.piece === 'k')) {
+    else if ((props.inCheck === 1) && (props.piece.color === 'b') && (props.piece.type === 'k')) {
         styles.push("check");
     }
 

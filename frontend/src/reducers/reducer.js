@@ -22,7 +22,7 @@ export const initialState = {
 };
 
 export function reducer(state, action) {
-    if (action.type === 'reset') {  // TODO: rename to 'reload'?
+    if (action.type === 'reload') {
         return {
             ...initialState,
             orientation: action.color,
@@ -115,40 +115,57 @@ export function reducer(state, action) {
             selected: null
         };	
     }
-    else if (action.type === 'position') {
+    else if (action.type === 'pgn') {
+        const chessjs = new Chess();
+        const fen = [chessjs.fen()];
+        const moves = [];
+        const lastFrom = [null];
+        const lastTo = [null];
+        const inCheck = [-1];
 
-        // e2 = row 7, col 4
-        const lastFrom = action.lastMove ? { row: (8 - action.lastMove.from[1]), col: (action.lastMove.from[0].charCodeAt() - 97) } : null;
-        const lastTo = action.lastMove ? { row: (8 - action.lastMove.to[1]), col: (action.lastMove.to[0].charCodeAt() - 97) } : null;
+        chessjs.loadPgn(action.pgn)
+        const history = chessjs.history({verbose: true});
 
-        const chessjs = new Chess(action.fen);
+        for (let i=0; i<history.length; i++) {
+            fen.push(history[i].after);
+            moves.push(history[i].san);
 
-        let inCheck = -1;
-        if (chessjs.inCheck()) {
-            inCheck = chessjs.turn() === 'w' ? WHITE : BLACK;
+            // e2 = row 7, col 4
+            const from = { row: (8 - history[i].from[1]), col: (history[i].from[0].charCodeAt() - 97) };
+            const to = { row: (8 - history[i].to[1]), col: (history[i].to[0].charCodeAt() - 97) };
+            lastFrom.push(from);
+            lastTo.push(to);
+
+            if ((history[i].san.endsWith("+")) || (history[i].san.endsWith("#"))) {
+                inCheck.push(history[i].color === 'w' ? BLACK : WHITE);
+            }
+            else {
+                inCheck.push(-1);
+            }
         }
 
-        // TODO: use just one modal flag and have the modal use inCheckmate?
-
-        let youWon;
-        let youLost;
-        if (chessjs.isCheckmate()) {
-            youWon = ((state.color === WHITE && chessjs.turn() === 'b') || (state.color === BLACK && chessjs.turn() === 'w'));
-            youLost = ((state.color === WHITE && chessjs.turn() === 'w') || (state.color === BLACK && chessjs.turn() === 'b'));
+        let youWon = false;
+        let youLost = false;
+        if (history.length > 0) {
+            const lastMove = history[history.length-1];
+            if (lastMove.san.endsWith("#")) {
+                youWon = (state.color === WHITE && lastMove.color === 'w') || (state.color === BLACK && lastMove.color === 'b');
+                youLost = (state.color === WHITE && lastMove.color === 'b') || (state.color === BLACK && lastMove.color === 'w');
+            }
         }
 
         return {
             ...state,
-            time: state.time + 1,
-            fen: [...state.fen, action.fen],
+            time: history.length,
+            fen: fen,
             selected: null,
-            lastFrom: [...state.lastFrom, lastFrom],
-            lastTo: [...state.lastTo, lastTo],
-            moves: action.lastMove ? [...state.moves, action.lastMove.san] : [...state.moves],
-            inCheck: [...state.inCheck, inCheck],
+            lastFrom: lastFrom,
+            lastTo: lastTo,
+            moves: moves,
+            inCheck: inCheck,
             youWon: youWon,
             youLost: youLost
-        };	
+        }
     }
     else if (action.type === 'select') {
         return {

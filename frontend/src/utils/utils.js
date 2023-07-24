@@ -23,6 +23,10 @@ export function getCaptured(fen, color) {
 
     // rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
+    if (!fen) {
+        return [];
+    }
+
 	let list = ['p','p','p','p','p','p','p','p','n','n','b','b','r','r','q','k'];	
 	
     for (let i=0; i<fen.indexOf(' '); i++) {
@@ -51,6 +55,10 @@ export function getScore(fen, color) {
 	
     // rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
 
+    if (!fen) {
+        return [];
+    }
+    
     const map = new Map([['p', -1], ['n', -3], ['b', -3], ['r', -5], ['q', -9], ['P', 1], ['N', 3],['B', 3], ['R', 5], ['Q', 9]]);
 
     let score = 0;

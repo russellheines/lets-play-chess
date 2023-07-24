@@ -32,17 +32,6 @@ function App() {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
-		socket.on("position", position => {
-			dispatch({type: "position", fen: position.fen, lastMove: position.lastMove});
-		});
-
-		// TODO: maintain numberOfPlayers
-
-		// on reload from session
-		socket.on("reset", color => {
-			dispatch({type: "reset", color: color});
-		});
-
 		socket.on("waiting", challengeId => {
 			dispatch({type: "waiting", challengeId: challengeId});
 		});
@@ -51,11 +40,19 @@ function App() {
 			dispatch({type: "accepted", color: color});
 		});
 
+		socket.on("pgn", pgn => {
+			dispatch({type: "pgn", pgn: pgn});
+		});
+
+		socket.on("reload", color => {
+			dispatch({type: "reload", color: color});  // TODO: reload numberOfPlayers
+		});
+
 		return () => {
-			socket.off('position');
-			socket.off('reset');
 			socket.off('waiting');
 			socket.off('accepted');
+			socket.off('pgn');
+			socket.off('reload');
 		};
 	}, []);
 
@@ -139,7 +136,7 @@ function App() {
 	}
 
 	function handlePlayAs(color) {
-		dispatch({type: "reset", color: color});
+		dispatch({type: "reload", color: color});
 		socket.emit("start", state.numberOfPlayers, color);
 	}
 
