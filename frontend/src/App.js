@@ -37,15 +37,17 @@ function App() {
 		});
 
 		socket.on("accepted", color => {
+			console.log("accepted, color=" + color);
 			dispatch({type: "accepted", color: color});
 		});
 
 		socket.on("pgn", pgn => {
+			console.log("pgn=" + pgn);
 			dispatch({type: "pgn", pgn: pgn});
 		});
 
-		socket.on("reload", color => {
-			dispatch({type: "reload", color: color});  // TODO: reload numberOfPlayers
+		socket.on("reload", (color, numberOfPlayers) => {
+			dispatch({type: "reload", color: color, numberOfPlayers: numberOfPlayers});
 		});
 
 		return () => {
@@ -113,7 +115,7 @@ function App() {
 				//setMoves(moves => [...moves, move.san]);
 				//setTime(t => t + 1);
 				
-				socket.emit("position", { "numberOfPlayers": state.numberOfPlayers, "fen" : chessjs.fen(), "lastMove" : move });
+				socket.emit("position", { "fen" : chessjs.fen(), "lastMove" : move });
 			}
 			catch (err) {
 				console.log(err);
@@ -136,8 +138,8 @@ function App() {
 	}
 
 	function handlePlayAs(color) {
-		dispatch({type: "reload", color: color});
-		socket.emit("start", state.numberOfPlayers, color);
+		dispatch({type: "reload", color: color, numberOfPlayers: state.numberOfPlayers});
+		socket.emit("start", color);
 	}
 
 	function handleChallenge(color) {

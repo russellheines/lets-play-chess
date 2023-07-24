@@ -14,11 +14,17 @@ module.exports = (io, socket) => {
 
     function unsubscribe() {}
     function subscribe() {
-        unsubscribe = firestore.collection("lets-play-chess").doc(req.session.gameId)
-        .onSnapshot((doc) => {
-            if (doc.data()) {
-                socket.emit('pgn', doc.data().pgn );
-            }
+        const query = firestore.collection("lets-play-chess").where("gameId", "==", req.session.gameId).orderBy('timestamp');
+        unsubscribe = query.onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                console.log(req.session.color + " change " + change.type);
+                if (change.type === 'added') {
+                    socket.emit('pgn', change.doc.data().pgn);
+                }
+                else if (change.type === 'modified') {
+                    socket.emit('pgn', change.doc.data().pgn);
+                }
+            });
         });
     }
 
@@ -48,13 +54,14 @@ module.exports = (io, socket) => {
 
     if (req.session.gameId) {
         console.log('reloading game ' + req.session.gameId);
-        socket.emit('reload', req.session.color);
+        socket.emit('reload', req.session.color, req.session.numberOfPlayers);
         subscribe();
     }
 
-    socket.on('start', (numberOfPlayers, color) => {
+    socket.on('start', (color) => {
         req.session.gameId = crypto.randomUUID();
         req.session.color = color;
+        req.session.numberOfPlayers = 1;
         req.session.save();
         console.log('starting game ' + req.session.gameId + ', playing as ' + color);
         subscribe();
@@ -66,13 +73,17 @@ module.exports = (io, socket) => {
             pgn: chessjs.pgn()
         });
 
-        if ((color === 1) && (numberOfPlayers === 1)) {
+        if (color === 1) {
             setTimeout(() => publish(chessjs.fen()), 250);
         }
     });
 
     socket.on('position', (position) => {
 
+        if (!req.session.gameId) {
+            console.log("No req.session.gameId!");
+            return;
+        }
         docRef = firestore.collection("lets-play-chess").doc(req.session.gameId);
 
         docRef.get().then((doc) => {
@@ -90,7 +101,7 @@ module.exports = (io, socket) => {
             return;
         }
 
-        if (position.numberOfPlayers === 1) {
+        if (req.session.numberOfPlayers === 1) {
             setTimeout(() => publish(position.fen), 250);
         }
     });
@@ -98,12 +109,14 @@ module.exports = (io, socket) => {
     socket.on('challenge', color => {
         req.session.gameId = crypto.randomUUID();
         req.session.color = color;
+        req.session.numberOfPlayers = 2;
         req.session.save();
         console.log('starting challenge ' + req.session.gameId + ', playing as ' + color);
         subscribeChallenges();
 
         const challengeId = req.session.gameId.substring(0,8);
 
+        // TODO: gameId?
         firestore.collection('lets-play-challenges').add({
             gameId: req.session.gameId,
             numberOfPlayers: 2,
@@ -127,6 +140,7 @@ module.exports = (io, socket) => {
 
                 req.session.gameId = doc.data().gameId;
                 req.session.color = doc.data().acceptingColor;
+                req.session.numberOfPlayers = 2;
                 req.session.save();
     
                 console.log('accepting challenge ' + challengeId);
@@ -140,7 +154,7 @@ module.exports = (io, socket) => {
                     pgn: chessjs.pgn()
                 });
 
-                socket.emit('accepted', req.session.color);    
+                socket.emit('accepted', req.session.color);
             });        
     });
 

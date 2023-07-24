@@ -26,7 +26,8 @@ export function reducer(state, action) {
         return {
             ...initialState,
             orientation: action.color,
-            color: action.color
+            color: action.color,
+            numberOfPlayers: action.numberOfPlayers
         };
     }
     else if (action.type === 'onePlayer') {
@@ -59,10 +60,10 @@ export function reducer(state, action) {
     }
     else if (action.type === 'accepted') {
         return {
-            ...initialState,
+            ...state,
+            waitingForAccept: false,
             orientation: action.color,
             color: action.color,
-            numberOfPlayers: 2
         };
     }
     else if (action.type === 'dismiss') {
