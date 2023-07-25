@@ -1,16 +1,22 @@
 import React from 'react'
 
-import LoopIcon from '@mui/icons-material/Loop';
-import AddIcon from '@mui/icons-material/Add';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import FlipBoardIcon from '@mui/icons-material/Cached';
+import NewGameIcon from '@mui/icons-material/Add';
+import AnalysisIcon from '@mui/icons-material/Biotech';
 
 function Controls(props) {
 
     return (
-        <div className="historyBtns">
-            <div className="historyBtn" onClick={() => props.dispatch({type: "orientation"})}><LoopIcon/></div>
-            <div className="historyBtn" onClick={props.handleNewGame}><AddIcon/></div>
-            <div className="historyBtn"><MoreHorizIcon/></div>
+        <div className='row'>
+            <div className='col'></div>
+            <div className='col-6'>
+                <div className="d-flex justify-content-between">
+                    <div className="historyBtn" onClick={() => props.dispatch({type: "orientation"})}><FlipBoardIcon/></div>
+                    <div className="historyBtn" onClick={props.handleNewGame}><NewGameIcon/></div>
+                    <div className="historyBtn"><AnalysisIcon/></div>
+                </div>
+            </div>
+            <div className='col'></div>
         </div>
     )
 }

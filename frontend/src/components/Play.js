@@ -23,6 +23,7 @@ function Play(props) {
 					handleChangeOrientation={props.handleChangeOrientation}
 					handleNewGame={props.handleNewGame}
 				/>
+				<div className='playerText'><span className="dot"></span>Anonymous</div>
 				<Captured
 					state={props.state}
 					color={props.state.orientation === 1 ? "w" : "b"}
@@ -32,13 +33,15 @@ function Play(props) {
 					dispatch={props.dispatch}
 					handleClickSquare={props.handleClickSquare}
 				/>
-				<Controls
-					handleChangeOrientation={props.handleChangeOrientation}
-					handleNewGame={props.handleNewGame}
-				/>
 				<Captured
 					state={props.state}
 					color={props.state.orientation === 0 ? "w" : "b"}
+				/>
+				<div className='playerText'><span className="dot"></span>Anonymous</div>
+				<Controls
+					dispatch={props.dispatch}
+					handleChangeOrientation={props.handleChangeOrientation}
+					handleNewGame={props.handleNewGame}
 				/>
 			</div>
 			}
@@ -55,6 +58,7 @@ function Play(props) {
 						color={props.state.orientation === 1 ? "w" : "b"}
 					/>
 					<div className="box-shadow">
+						<div className='playerText'><span className="dot"></span>Anonymous</div>
 						<History
 							state={props.state}
 							dispatch={props.dispatch}
@@ -65,6 +69,7 @@ function Play(props) {
 							handleChangeOrientation={props.handleChangeOrientation}
 							handleNewGame={props.handleNewGame}
 						/>
+						<div className='playerText'><span className="dot"></span>Anonymous</div>
 					</div>
 					<Captured
 						state={props.state}

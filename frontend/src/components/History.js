@@ -19,12 +19,9 @@ function scrollIntoView() {
 		return;
 	}
 
-    let historyList = document.getElementsByClassName("history");
-    for (let history of historyList) {
-	    if ((history) && (history.getElementsByClassName("historyMoveNumber")[0])) {
-	    	history.getElementsByClassName("historyMoveNumber")[0].scrollIntoView();
-	    }
- 	}
+    if (document.getElementsByClassName("historyMoveNumber")[0]) {
+        document.getElementsByClassName("historyMoveNumber")[0].scrollIntoView();
+    }
 }
 
 function History(props) {
@@ -80,10 +77,10 @@ function History(props) {
 
     if (isPortrait) {
         return (
-             <div className="history d-flex">
+             <div className="d-flex">
                 <div className={firstStyle} onClick={first}><FirstPageIcon/></div>
                 <div className={previousStyle} onClick={previous}><NavigateBeforeIcon/></div>
-                <div className="flex-grow-1 box-shadow-inset" style={{overflowX: "hidden"}}>
+                <div className="historyMoves flex-grow-1 box-shadow-inset" style={{overflowX: "hidden"}}>
                     <div className="d-flex">
                         {items}
                     </div>
@@ -95,7 +92,7 @@ function History(props) {
     }
     else {
         return (
-    	    <div className="history">
+    	    <div>
                 <div className="historyBtns">
                     <div className={firstStyle} onClick={first}><FirstPageIcon/></div>
                     <div className={previousStyle} onClick={previous}><NavigateBeforeIcon/></div>

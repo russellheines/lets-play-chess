@@ -17,11 +17,12 @@ module.exports = (io, socket) => {
         const query = firestore.collection("lets-play-chess").where("gameId", "==", req.session.gameId).orderBy('timestamp');
         unsubscribe = query.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
-                console.log(req.session.color + " change " + change.type);
                 if (change.type === 'added') {
+                    //console.log('added');
                     socket.emit('pgn', change.doc.data().pgn);
                 }
                 else if (change.type === 'modified') {
+                    //console.log('modified');
                     socket.emit('pgn', change.doc.data().pgn);
                 }
             });
@@ -40,8 +41,8 @@ module.exports = (io, socket) => {
         });
     }
 
-    function publish(fen) {
-        const data = JSON.stringify({gameId: req.session.gameId, fen: fen});
+    function computerMove() {
+        const data = JSON.stringify({gameId: req.session.gameId});  // TODO: color, as a sanity check
         const dataBuffer = Buffer.from(data);
 
         try {
@@ -74,7 +75,7 @@ module.exports = (io, socket) => {
         });
 
         if (color === 1) {
-            setTimeout(() => publish(chessjs.fen()), 250);
+            setTimeout(() => computerMove(), 250);
         }
     });
 
@@ -96,13 +97,8 @@ module.exports = (io, socket) => {
             }
         });
 
-        const chessjs = new Chess(position.fen);
-        if (chessjs.isCheckmate() || chessjs.isDraw()) {
-            return;
-        }
-
         if (req.session.numberOfPlayers === 1) {
-            setTimeout(() => publish(position.fen), 250);
+            setTimeout(() => computerMove(), 250);  // will exit early if in checkmate or stalemate
         }
     });
 

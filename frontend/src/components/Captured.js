@@ -10,10 +10,6 @@ import { getCaptured, getScore } from '../utils/utils';
 
 function Captured(props) {
 
-    if (props.state.time < 0) {
-        return;
-    }
-
     const fen = props.state.fen[props.state.time];
 
     const pieces = [];
@@ -38,10 +34,6 @@ function Captured(props) {
         }
     }
 	
-    if (pieces.length === 0) {
-        pieces.push(<CapturedPawn className="captured capturedPawn" key="0" style={{opacity: "0"}}/>);  // placeholder
-    }
-
 	// only display score if it's positive
     let s = getScore(fen, props.color);
     s = s > 0 ? "+" + s : "";
