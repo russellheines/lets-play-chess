@@ -1,14 +1,12 @@
 import React, { useEffect, useState, useReducer } from 'react';
 
 import { initialState, reducer } from "./reducers/reducer";
-import { getSquare } from "./utils/utils";
+import { validateSelection, validateMove } from "./utils/utils";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import Play from './components/Play';
-
-import { Chess } from 'chess.js';
 
 import { io } from 'socket.io-client';
 
@@ -37,12 +35,10 @@ function App() {
 		});
 
 		socket.on("accepted", color => {
-			console.log("accepted, color=" + color);
 			dispatch({type: "accepted", color: color});
 		});
 
 		socket.on("pgn", pgn => {
-			console.log("pgn=" + pgn);
 			dispatch({type: "pgn", pgn: pgn});
 		});
 
@@ -59,66 +55,16 @@ function App() {
 	}, []);
 
 	function handleClickSquare(row, col) {
-
-		if (state.time < 0) {
-			return;
-		}
-
-		const sq = getSquare(row, col);
-		//console.log("row=" + row + ", col=" + col, "sq=" + sq);
-
-    	const chessjs = new Chess(state.fen[state.time]);
-		
-		if (state.selected === null) {
-			
-			// return if not at the current time
-			if (state.time !== state.fen.length - 1) {
-				return;
-			}
-
-			// return if there is no piece, or not that color's turn
-			if ((chessjs.get(sq) === null) || (chessjs.get(sq).color !== chessjs.turn())) {
-				return;
-			}
-
-			// return if playing as white and color is not white
-			if ((state.color === WHITE) && (chessjs.get(sq).color !== 'w')) {
-				return;
-			}
-
-			// return if playing as black and color is not black
-			if ((state.color === BLACK) && (chessjs.get(sq).color !== 'b')) {
-				return;
-			}
-
+		if ((state.selected === null) && (validateSelection(state, row, col))) {
 			dispatch({type: "select", row: row, col: col});
 		}
 		else if ((state.selected.row === row) && (state.selected.col === col)) {
 			dispatch({type: "clearSelection"});
 		}
 		else {
-			let from = getSquare(state.selected.row, state.selected.col);
-			let to = getSquare(row, col);
-			console.log("from=" + from + ", to=" + to);
-
-			try {
-				let move = null;
-				if (((chessjs.get(from).type === 'p') && (chessjs.get(from).color === 'w') && (row === 0)) ||
-					((chessjs.get(from).type === 'p') && (chessjs.get(from).color === 'b') && (row === 7))) {
-					move = chessjs.move({ from: from, to: to, promotion: 'q' });
-				}
-				else {
-					move = chessjs.move({ from: from, to: to });
-				}
-
-				//setFen(fen => [...fen, chessjs.fen()]);
-				//setMoves(moves => [...moves, move.san]);
-				//setTime(t => t + 1);
-				
-				socket.emit("position", { "fen" : chessjs.fen(), "lastMove" : move });
-			}
-			catch (err) {
-				console.log(err);
+			const move = validateMove(state, row, col);
+			if (move) {
+				socket.emit("position", { "lastMove" : move });
 			}
 		}
 	}

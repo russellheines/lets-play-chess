@@ -60,9 +60,7 @@ function History(props) {
         const styleBlack = indexBlack !== time-1 ? "historyMove" : "historyMove current";
 
         const sanWhite = moves[indexWhite].replaceAll('-',String.fromCharCode(8209));  // non-breaking hyphen
-        const sanBlack = indexBlack < moves.length ?
-            moves[indexBlack].replaceAll('-',String.fromCharCode(8209)) :
-            null;
+        const sanBlack = indexBlack < moves.length ? moves[indexBlack].replaceAll('-',String.fromCharCode(8209)) : null;
 
         items.push(
             <div key={key++} className="d-flex">

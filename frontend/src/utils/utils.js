@@ -1,3 +1,5 @@
+import { Chess } from 'chess.js';
+
 /**
  * Returns a Square for the given row and column.  For example:
  * 
@@ -7,6 +9,70 @@
  */
 export function getSquare(row, col) {    
     return String.fromCharCode(97 + col) + (8 - row);  // 97 = 'a'
+}
+
+/**
+ * Validates if the use can select a piece at the given row and column and returns true or false.
+ */
+export function validateSelection(state, row, col) {
+
+	// check if the game has started
+    if (state.time < 0) {
+        return false;
+    }
+
+	// check if looking at the most recent move
+	if (state.time !== state.fen.length - 1) {
+		return false;
+	}
+
+    const sq = getSquare(row, col);
+    const chessjs = new Chess(state.fen[state.time]);
+
+	// check if there is a piece at this square
+	if (chessjs.get(sq) === null) {
+		return false;
+	}
+
+	// check if playing as white and color is not white
+	if ((state.color === 0) && (chessjs.get(sq).color !== 'w')) {
+		return false;
+	}
+
+	// check if playing as black and color is not black
+	if ((state.color === 1) && (chessjs.get(sq).color !== 'b')) {
+		return false;
+	}
+
+    return true;
+}
+
+/**
+ * Validates if the user can move a selected piece to the given row and column and returns the validated move or null.
+ */
+export function validateMove(state, row, col) {
+
+    const chessjs = new Chess(state.fen[state.time]);
+		
+    const from = getSquare(state.selected.row, state.selected.col);
+    const to = getSquare(row, col);
+
+    let move = null;
+
+    try {
+        if (((chessjs.get(from).type === 'p') && (chessjs.get(from).color === 'w') && (row === 0)) ||
+            ((chessjs.get(from).type === 'p') && (chessjs.get(from).color === 'b') && (row === 7))) {
+            move = chessjs.move({ from: from, to: to, promotion: 'q' });
+        }
+        else {
+            move = chessjs.move({ from: from, to: to });
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
+
+    return move;
 }
 
 /**

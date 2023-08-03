@@ -6,6 +6,7 @@ import Board from "./Board";
 import History from "./History";
 import Controls from "./Controls";
 import Captured from "./Captured";
+import PlayerText from "./PlayerText";
 import PlayModal from "./PlayModal";
 
 function Play(props) {
@@ -23,7 +24,7 @@ function Play(props) {
 					handleChangeOrientation={props.handleChangeOrientation}
 					handleNewGame={props.handleNewGame}
 				/>
-				<div className='playerText'><span className="dot"></span>Anonymous</div>
+				<PlayerText/>
 				<Captured
 					state={props.state}
 					color={props.state.orientation === 1 ? "w" : "b"}
@@ -37,7 +38,7 @@ function Play(props) {
 					state={props.state}
 					color={props.state.orientation === 0 ? "w" : "b"}
 				/>
-				<div className='playerText'><span className="dot"></span>Anonymous</div>
+				<PlayerText/>
 				<Controls
 					dispatch={props.dispatch}
 					handleChangeOrientation={props.handleChangeOrientation}
@@ -58,7 +59,7 @@ function Play(props) {
 						color={props.state.orientation === 1 ? "w" : "b"}
 					/>
 					<div className="box-shadow">
-						<div className='playerText'><span className="dot"></span>Anonymous</div>
+						<PlayerText/>
 						<History
 							state={props.state}
 							dispatch={props.dispatch}
@@ -69,7 +70,7 @@ function Play(props) {
 							handleChangeOrientation={props.handleChangeOrientation}
 							handleNewGame={props.handleNewGame}
 						/>
-						<div className='playerText'><span className="dot"></span>Anonymous</div>
+						<PlayerText/>
 					</div>
 					<Captured
 						state={props.state}
