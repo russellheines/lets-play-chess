@@ -12,10 +12,10 @@ module.exports = (io, socket) => {
     console.log('user connected');
     const req = socket.request;
 
-    function unsubscribe() {}
-    function subscribe() {
+    function detachListener() {}
+    function listen() {
         const query = firestore.collection("lets-play-chess").where("gameId", "==", req.session.gameId).orderBy('timestamp');
-        unsubscribe = query.onSnapshot((snapshot) => {
+        detachListener = query.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
                     //console.log('added');
@@ -29,10 +29,10 @@ module.exports = (io, socket) => {
         });
     }
 
-    function unsubscribeChallenges() {}
-    function subscribeChallenges() {
+    function detachListenerChallenges() {}
+    function listenChallenges() {
         const query = firestore.collection('lets-play-challenges').where("gameId", "==", req.session.gameId).orderBy('timestamp');
-        unsubscribeChallenges = query.onSnapshot((snapshot) => {
+        detachListenerChallenges = query.onSnapshot((snapshot) => {
             snapshot.docChanges().forEach((change) => {
                 if ((change.type === 'modified') && (change.doc.data().accepted === true)) {
                     socket.emit('accepted', req.session.color);
@@ -42,11 +42,13 @@ module.exports = (io, socket) => {
     }
 
     function computerMove() {
-        const data = JSON.stringify({gameId: req.session.gameId});  // TODO: color, as a sanity check
-        const dataBuffer = Buffer.from(data);
+        // send color as part of a sanity check to make sure the computer doesn't make two moves, if the message is
+        // processed twice
+        const computerColor = req.session.color == 0 ? 1 : 0;
+        const data = JSON.stringify({gameId: req.session.gameId, color: computerColor});
 
         try {
-            pubsub.topic("random-topic").publishMessage({data: dataBuffer});
+            pubsub.topic("alphabeta-topic").publishMessage({data: Buffer.from(data)});
         }
         catch (error) {
             console.error(`Received error while publishing: ${error.message}`);
@@ -56,7 +58,7 @@ module.exports = (io, socket) => {
     if (req.session.gameId) {
         console.log('reloading game ' + req.session.gameId);
         socket.emit('reload', req.session.color, req.session.numberOfPlayers);
-        subscribe();
+        listen();
     }
 
     socket.on('start', (color) => {
@@ -65,18 +67,19 @@ module.exports = (io, socket) => {
         req.session.numberOfPlayers = 1;
         req.session.save();
         console.log('starting game ' + req.session.gameId + ', playing as ' + color);
-        subscribe();
+        listen();
 
         const chessjs = new Chess();        
         firestore.collection('lets-play-chess').doc(req.session.gameId).set({
             gameId: req.session.gameId,
             timestamp: Firestore.Timestamp.fromDate(new Date()),
             pgn: chessjs.pgn()
+        })
+        .then(() => {
+            if (color === 1) {
+                setTimeout(() => computerMove(), 100);
+            }
         });
-
-        if (color === 1) {
-            setTimeout(() => computerMove(), 250);
-        }
     });
 
     socket.on('position', (position) => {
@@ -95,11 +98,12 @@ module.exports = (io, socket) => {
 
                 docRef.update({ pgn: chessjs.pgn()});
             }
+        })
+        .then(() => {
+            if (req.session.numberOfPlayers === 1) {
+                setTimeout(() => computerMove(), 100);  // will exit early if in checkmate or stalemate
+            }
         });
-
-        if (req.session.numberOfPlayers === 1) {
-            setTimeout(() => computerMove(), 250);  // will exit early if in checkmate or stalemate
-        }
     });
 
     socket.on('challenge', color => {
@@ -108,11 +112,10 @@ module.exports = (io, socket) => {
         req.session.numberOfPlayers = 2;
         req.session.save();
         console.log('starting challenge ' + req.session.gameId + ', playing as ' + color);
-        subscribeChallenges();
+        listenChallenges();
 
         const challengeId = req.session.gameId.substring(0,8);
 
-        // TODO: gameId?
         firestore.collection('lets-play-challenges').add({
             gameId: req.session.gameId,
             numberOfPlayers: 2,
@@ -125,7 +128,7 @@ module.exports = (io, socket) => {
 
         socket.emit('waiting', challengeId);
 
-        subscribe();
+        listen();
     });
 
     socket.on('accept', challengeId => {
@@ -141,7 +144,7 @@ module.exports = (io, socket) => {
     
                 console.log('accepting challenge ' + challengeId);
 
-                subscribe();
+                listen();
 
                 const chessjs = new Chess();        
                 firestore.collection('lets-play-chess').doc(req.session.gameId).set({
@@ -156,7 +159,7 @@ module.exports = (io, socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected');        
-        unsubscribe();
-        unsubscribeChallenges();
+        detachListener();
+        detachListenerChallenges();
     });
 }

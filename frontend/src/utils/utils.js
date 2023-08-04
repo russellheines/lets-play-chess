@@ -16,7 +16,7 @@ export function getSquare(row, col) {
  */
 export function validateSelection(state, row, col) {
 
-	// check if the game has started
+    // check if the game has started
     if (state.time < 0) {
         return false;
     }
@@ -51,6 +51,11 @@ export function validateSelection(state, row, col) {
  * Validates if the user can move a selected piece to the given row and column and returns the validated move or null.
  */
 export function validateMove(state, row, col) {
+
+    // check if a piece is selected
+    if (!state.selected) {
+        return null;
+    }
 
     const chessjs = new Chess(state.fen[state.time]);
 		

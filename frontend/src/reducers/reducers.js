@@ -169,15 +169,14 @@ export function reducer(state, action) {
         }
     }
     else if (action.type === 'select') {
+        let selected = {row: action.row, col: action.col};
+        if ((state.selected) && (state.selected.row === action.row) && (state.selected.col === action.col)) {
+            selected = null;
+        }
+
         return {
             ...state,
-            selected: {row: action.row, col: action.col}
-        };	
-    }
-    else if (action.type === 'clearSelection') {
-        return {
-            ...state,
-            selected: null
+            selected: selected
         };	
     }
     else {

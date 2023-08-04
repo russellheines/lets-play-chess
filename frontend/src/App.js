@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useReducer } from 'react';
 
-import { initialState, reducer } from "./reducers/reducer";
+import { initialState, reducer } from "./reducers/reducers";
 import { validateSelection, validateMove } from "./utils/utils";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -9,9 +9,6 @@ import Layout from "./components/Layout";
 import Play from './components/Play';
 
 import { io } from 'socket.io-client';
-
-const WHITE = 0;
-const BLACK = 1;
 
 const socket = io({
 	withCredentials: true,
@@ -55,11 +52,8 @@ function App() {
 	}, []);
 
 	function handleClickSquare(row, col) {
-		if ((state.selected === null) && (validateSelection(state, row, col))) {
+		if (validateSelection(state, row, col)) {
 			dispatch({type: "select", row: row, col: col});
-		}
-		else if ((state.selected.row === row) && (state.selected.col === col)) {
-			dispatch({type: "clearSelection"});
 		}
 		else {
 			const move = validateMove(state, row, col);
