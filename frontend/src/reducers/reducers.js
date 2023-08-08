@@ -13,7 +13,7 @@ export const initialState = {
     inCheck: [],
     orientation: WHITE,
     color: WHITE, // used for validating moves and determining if checkmate is a win or a loss, not used by child components
-    numberOfPlayers: 1, // used rending modal and for determine whether or not to trigger a computer move
+    numberOfPlayers: 1, // used rendering modal and for determining whether or not to trigger a computer move
     chooseSide: false,
     youWon: false,
     youLost: false,

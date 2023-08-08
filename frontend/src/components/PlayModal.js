@@ -6,17 +6,6 @@ import { ReactComponent as WhiteKing } from '../assets/lichess/wK.svg';
 import { ReactComponent as BlackKing } from '../assets/lichess/bK.svg';
 import { ReactComponent as WhiteBlackKing } from '../assets/lichess/wbK.svg';
 
-/**
- * 
- * References:
- * 
- * - https://getbootstrap.com/docs/5.3/utilities/flex/
- * - https://getbootstrap.com/docs/5.3/components/modal/
- * - https://getbootstrap.com/docs/5.3/forms/
- * - https://www.w3schools.com/react/react_forms.asp
- * - https://stackoverflow.com/questions/66541564/how-to-hide-bootstrap-5-modal-only-on-success
- * 
- */
 function PlayModal(props) {
 
 	const numberOfPlayers = props.state.numberOfPlayers;

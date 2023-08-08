@@ -4,11 +4,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { Outlet, Link } from "react-router-dom";
 
-/**
- * Based on examples from https://getbootstrap.com/docs/5.3/components/navbar/.
- * 
- * NOTE: data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" is used to re-collapse the navbar when an item is selected
- */
 function Layout(props) {
 
   return (
