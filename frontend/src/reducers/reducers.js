@@ -18,16 +18,15 @@ export const initialState = {
     youWon: false,
     youLost: false,
     waitingForAccept: false,
-    challengeId: null
+    challengeId: null,
+    isActive: false // whether or not the user has been active in the last 5 minutes (determines whether or not to reconnect)
 };
 
 export function reducer(state, action) {
     if (action.type === 'reload') {
         return {
-            ...initialState,
-            orientation: action.color,
-            color: action.color,
-            numberOfPlayers: action.numberOfPlayers
+            ...state,
+            isActive: false
         };
     }
     else if (action.type === 'onePlayer') {
@@ -125,6 +124,15 @@ export function reducer(state, action) {
         const inCheck = [-1];
 
         chessjs.loadPgn(action.pgn)
+
+        if (chessjs.fen() === state.fen[state.fen.length - 1]) {
+            console.log("no changes, leaving isActive: " + state.isActive);
+            return {
+                ...state,  // nothing changed...
+            };
+        }
+        console.log("changes, leaving isActive: true");
+
         const history = chessjs.history({verbose: true});
 
         for (let i=0; i<history.length; i++) {
@@ -156,7 +164,10 @@ export function reducer(state, action) {
         }
 
         return {
-            ...state,
+            ...initialState,
+            orientation: action.color,
+            color: action.color,
+            numberOfPlayers: action.numberOfPlayers,
             time: history.length,
             fen: fen,
             selected: null,
@@ -165,7 +176,8 @@ export function reducer(state, action) {
             moves: moves,
             inCheck: inCheck,
             youWon: youWon,
-            youLost: youLost
+            youLost: youLost,
+            isActive: true
         }
     }
     else if (action.type === 'select') {

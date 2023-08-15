@@ -14,6 +14,7 @@ function PlayModal(props) {
 	const youLost = props.state.youLost;
 	const waitingForAccept = props.state.waitingForAccept;
 	const challengeId = props.state.challengeId;
+	const handleDismissModal = props.handleDismissModal;
 	
 	const [challengeKey, setChallengeKey] = useState("");  // TODO: rename
 	
@@ -26,13 +27,13 @@ function PlayModal(props) {
 				setChallengeKey("");
 			});
 			playModalEl.addEventListener("hidden.bs.modal", event => {
-				props.handleDismissModal();  // clears state if a user clicks the close button or outside of the modal (or enters a challenge key)
+				handleDismissModal();  // clears state if a user clicks the close button or outside of the modal (or enters a challenge key)
 			});
 		}
 		else {
 			playModal.hide();
 		}
-	}, [props]);
+	}, [chooseSide, youWon, youLost, waitingForAccept, handleDismissModal]);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();

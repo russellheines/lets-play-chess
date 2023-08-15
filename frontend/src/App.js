@@ -11,7 +11,7 @@ import Play from './components/Play';
 import { io } from 'socket.io-client';
 
 const socket = io({
-	withCredentials: true,
+	reconnection: false
 });
 
 function App() {
@@ -24,9 +24,52 @@ function App() {
 		.then(data => setUsername(data.name ? data.name : null));
 	}, []);
 
+	function rejectDelay(reason) {
+		return new Promise(function(resolve, reject) {
+			setTimeout(reject.bind(null, reason), 1000); 
+		});
+	}
+
+	function connect(socket) {
+		const s = socket.connect();
+	
+		if (s.connected) {
+		  return "success";
+		} else {
+		  throw Error("failed to connect");
+		}
+	}
+
+	function connectWithRetries(socket) {
+		var p = Promise.reject();
+		
+		for(var i=0; i<10; i++) {
+			p = p.catch(() => connect(socket)).catch(rejectDelay);
+		}
+		return p;
+	}
+	
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
+
+		socket.on('connect', () => {
+			console.log("connected!");
+		});
+
+		socket.on('disconnect', () => {
+			console.log("disconnected!");
+			if (state.isActive === true) {
+				connectWithRetries(socket)
+				.catch(err => {
+					console.log(err);
+				});
+			}
+			else {
+				console.log("not attempting to reconnect");
+			}
+		});
+
 		socket.on("waiting", challengeId => {
 			dispatch({type: "waiting", challengeId: challengeId});
 		});
@@ -35,23 +78,26 @@ function App() {
 			dispatch({type: "accepted", color: color});
 		});
 
-		socket.on("pgn", pgn => {
-			dispatch({type: "pgn", pgn: pgn});
+		socket.on("pgn", (pgn, color, numberOfPlayers) => {
+			dispatch({type: "pgn", pgn: pgn, color: color, numberOfPlayers: numberOfPlayers});
 		});
 
-		socket.on("reload", (color, numberOfPlayers) => {
-			dispatch({type: "reload", color: color, numberOfPlayers: numberOfPlayers});
+		socket.on("reload", () => {
+			dispatch({type: "reload"});  // set isActive = false
 		});
 
 		return () => {
+			socket.off('connect');
+			socket.off('disconnect');
 			socket.off('waiting');
 			socket.off('accepted');
 			socket.off('pgn');
 			socket.off('reload');
 		};
-	}, []);
+	}, [state.isActive]);  // TODO: useCallback for connectWithRetries
 
 	function handleClickSquare(row, col) {
+		//console.log("clicked row: " + row + ", col:" + col);
 		if (validateSelection(state, row, col)) {
 			dispatch({type: "select", row: row, col: col});
 		}
@@ -64,12 +110,10 @@ function App() {
 	}
 
 	function handleOnePlayer() {
-		fetch("/clear");
 		dispatch({type: "onePlayer"});
 	}
 
 	function handleTwoPlayers() {
-		fetch("/clear");
 		dispatch({type: "twoPlayers"});
 	}
 
@@ -78,7 +122,6 @@ function App() {
 	}
 
 	function handlePlayAs(color) {
-		dispatch({type: "reload", color: color, numberOfPlayers: state.numberOfPlayers});
 		socket.emit("start", color);
 	}
 

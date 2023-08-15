@@ -28,12 +28,6 @@ app.use('/', authRouter);
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('/clear', function (req, res) {
-  req.session.gameId = null;
-  req.session.color = null;
-  req.session.save();
-});
-
 app.get('/*', function (req, res) {
    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
