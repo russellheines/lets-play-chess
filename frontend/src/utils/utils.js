@@ -29,20 +29,31 @@ export function validateSelection(state, row, col) {
     const sq = getSquare(row, col);
     const chessjs = new Chess(state.fen[state.time]);
 
+	// check if playing as white and it's not white's turn
+	if ((state.color === 0) && (chessjs.turn() !== 'w')) {
+		return false;
+	}
+
+	// check if playing as black and it's not black's turn
+	if ((state.color === 1) && (chessjs.turn() !== 'b')) {
+		return false;
+	}
+
 	// check if there is a piece at this square
 	if (chessjs.get(sq) === null) {
 		return false;
 	}
 
-	// check if playing as white and color is not white
+	// check if playing as white and the piece at this square is not white
 	if ((state.color === 0) && (chessjs.get(sq).color !== 'w')) {
 		return false;
 	}
 
-	// check if playing as black and color is not black
+	// check if playing as black and the piece at this square is not black
 	if ((state.color === 1) && (chessjs.get(sq).color !== 'b')) {
 		return false;
 	}
+
 
     return true;
 }

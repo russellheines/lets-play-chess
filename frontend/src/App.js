@@ -14,6 +14,14 @@ const socket = io({
 	reconnection: false
 });
 
+function reconnect(socket, attemptsRemaining=10) {
+	const s = socket.connect();
+	if ((s.connected) || (attemptsRemaining <= 0)){
+		return;
+	}
+	setTimeout(() => { reconnect(socket, attemptsRemaining-1) }, 1000);
+}
+
 function App() {
 
 	const [username, setUsername] = useState(undefined);
@@ -23,31 +31,6 @@ function App() {
 		.then(res => res.json())
 		.then(data => setUsername(data.name ? data.name : null));
 	}, []);
-
-	function rejectDelay(reason) {
-		return new Promise(function(resolve, reject) {
-			setTimeout(reject.bind(null, reason), 1000); 
-		});
-	}
-
-	function connect(socket) {
-		const s = socket.connect();
-	
-		if (s.connected) {
-		  return "success";
-		} else {
-		  throw Error("failed to connect");
-		}
-	}
-
-	function connectWithRetries(socket) {
-		var p = Promise.reject();
-		
-		for(var i=0; i<10; i++) {
-			p = p.catch(() => connect(socket)).catch(rejectDelay);
-		}
-		return p;
-	}
 	
 	const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -55,18 +38,19 @@ function App() {
 
 		socket.on('connect', () => {
 			console.log("connected!");
+
+			dispatch({type: "connected"});
 		});
 
 		socket.on('disconnect', () => {
 			console.log("disconnected!");
-			if (state.isActive === true) {
-				connectWithRetries(socket)
-				.catch(err => {
-					console.log(err);
-				});
+
+			dispatch({type: "disconnected"});
+			if (state.isActive) {
+				reconnect(socket);
 			}
 			else {
-				console.log("not attempting to reconnect");
+				console.log("not attempting to reconnect!");
 			}
 		});
 
@@ -94,7 +78,7 @@ function App() {
 			socket.off('pgn');
 			socket.off('reload');
 		};
-	}, [state.isActive]);  // TODO: useCallback for connectWithRetries
+	}, [state.isActive]);  // TODO: useCallback for reconnect
 
 	function handleClickSquare(row, col) {
 		//console.log("clicked row: " + row + ", col:" + col);
@@ -126,10 +110,16 @@ function App() {
 	}
 
 	function handleChallenge(color) {
+		if (!socket.connected) {
+			socket.connect();
+		}
 		socket.emit("challenge", color);
 	}
 		
 	function handleAccept(gameId) {
+		if (!socket.connected) {
+			socket.connect();
+		}
 		socket.emit("accept", gameId);
 	}
 

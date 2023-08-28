@@ -14,6 +14,7 @@ function PlayModal(props) {
 	const youLost = props.state.youLost;
 	const waitingForAccept = props.state.waitingForAccept;
 	const challengeId = props.state.challengeId;
+	const isConnected = props.state.isConnected;
 	const handleDismissModal = props.handleDismissModal;
 	
 	const [challengeKey, setChallengeKey] = useState("");  // TODO: rename
@@ -33,7 +34,7 @@ function PlayModal(props) {
 		else {
 			playModal.hide();
 		}
-	}, [chooseSide, youWon, youLost, waitingForAccept, handleDismissModal]);
+	}, [chooseSide, youWon, youLost, handleDismissModal]);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -111,6 +112,11 @@ function PlayModal(props) {
 									<div className='col'/>
 								</div>
 								<p />
+							</>
+							}
+							{!isConnected &&
+							<>
+								<p>Disconnected!</p>
 							</>
 							}
 						</div>

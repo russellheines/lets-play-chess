@@ -19,7 +19,8 @@ export const initialState = {
     youLost: false,
     waitingForAccept: false,
     challengeId: null,
-    isActive: false // whether or not the user has been active in the last 5 minutes (determines whether or not to reconnect)
+    isActive: false, // TODO: remove, use isConnected to notify the user (?)
+    isConnected: true
 };
 
 export function reducer(state, action) {
@@ -27,6 +28,18 @@ export function reducer(state, action) {
         return {
             ...state,
             isActive: false
+        };
+    }
+    else if (action.type === 'connected') {
+        return {
+            ...state,
+            isConnected: true
+        };
+    }
+    else if (action.type === 'disconnected') {
+        return {
+            ...state,
+            isConnected: false
         };
     }
     else if (action.type === 'onePlayer') {
@@ -53,6 +66,7 @@ export function reducer(state, action) {
         return {
             ...state,
             chooseSide: false,
+            numberOfPlayers: 2,
             waitingForAccept: true,
             challengeId: action.challengeId
         };
@@ -126,12 +140,12 @@ export function reducer(state, action) {
         chessjs.loadPgn(action.pgn)
 
         if (chessjs.fen() === state.fen[state.fen.length - 1]) {
-            console.log("no changes, leaving isActive: " + state.isActive);
+            //console.log("no changes, leaving isActive: " + state.isActive);
             return {
                 ...state,  // nothing changed...
             };
         }
-        console.log("changes, leaving isActive: true");
+        //console.log("changes, leaving isActive: true");
 
         const history = chessjs.history({verbose: true});
 

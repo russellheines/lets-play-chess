@@ -34,9 +34,9 @@ app.get('/*', function (req, res) {
 
 io.engine.use(sessionMiddleware);
 
-const registerChessHandlers = require("./chessHandler");
-io.on("connection", (socket) => {
-  registerChessHandlers(io, socket);
+const registerHandler = require("./socketHandler");
+io.on("connection", socket => {
+  registerHandler(socket);
 });
 
 const port = parseInt(process.env.PORT) || 3001;
