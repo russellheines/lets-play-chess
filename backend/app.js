@@ -9,22 +9,17 @@ const httpServer = require('http').createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(httpServer);
 
-const passport = require('passport');
-const authRouter = require('./routes/auth');
 const path = require('path');
 
 app.enable("trust proxy");
 
 const sessionMiddleware = session({
-  store: sessionStore,
-  secret: "changeme",
-  resave: false,
-  saveUninitialized: true
+    store: sessionStore,
+    secret: "changeme",
+    resave: false,
+    saveUninitialized: true
 });
 app.use(sessionMiddleware);
-
-app.use(passport.authenticate('session'));
-app.use('/', authRouter);
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -34,12 +29,12 @@ app.get('/*', function (req, res) {
 
 io.engine.use(sessionMiddleware);
 
-const registerHandler = require("./socketHandler");
+const socketHandler = require("./socketHandler");
 io.on("connection", socket => {
-  registerHandler(socket);
+    socketHandler(socket);
 });
 
 const port = parseInt(process.env.PORT) || 3001;
 httpServer.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+    console.log(`Listening on port ${port}`);
 })

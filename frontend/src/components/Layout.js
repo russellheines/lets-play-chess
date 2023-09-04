@@ -1,8 +1,8 @@
 import React from 'react';
 
-import LogoutIcon from '@mui/icons-material/Logout';
-
 import { Outlet, Link } from "react-router-dom";
+
+import { ReactComponent as Github } from '../assets/github/github-mark.svg';
 
 function Layout(props) {
 
@@ -37,15 +37,10 @@ function Layout(props) {
                 </ul>
               </li>
             </ul>
-            <ul className="navbar-nav">
-              {props.name === null ? (
-                <li>
-                  <a className="nav-link" href="/login/federated/google">Sign in with Google</a>
-                </li>
-              ) :
-              (
-                <li className="navbar-text">Signed in as {props.name}&nbsp;&nbsp;<a href="/logout"><LogoutIcon/></a></li>
-              )}
+            <ul className='navbar-nav'>
+              <div style={{ height: 24, width: 24 }}>
+                <a href="http://www.github.com/russellheines/lets-play-chess/"><Github/></a>                
+              </div>
             </ul>
           </div>
         </div>

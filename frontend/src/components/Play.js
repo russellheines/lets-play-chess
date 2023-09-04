@@ -24,7 +24,9 @@ function Play(props) {
 					handleChangeOrientation={props.handleChangeOrientation}
 					handleNewGame={props.handleNewGame}
 				/>
-				<PlayerText/>
+				<PlayerText
+					playerName={props.state.numberOfPlayers === 1 ? "Computer" : "Friend"}
+				/>
 				<Captured
 					state={props.state}
 					color={props.state.orientation === 1 ? "w" : "b"}
@@ -38,7 +40,9 @@ function Play(props) {
 					state={props.state}
 					color={props.state.orientation === 0 ? "w" : "b"}
 				/>
-				<PlayerText/>
+				<PlayerText
+					playerName="You"
+				/>
 				<Controls
 					dispatch={props.dispatch}
 					handleChangeOrientation={props.handleChangeOrientation}
@@ -59,7 +63,9 @@ function Play(props) {
 						color={props.state.orientation === 1 ? "w" : "b"}
 					/>
 					<div className="box-shadow">
-						<PlayerText/>
+						<PlayerText
+							playerName={props.state.numberOfPlayers === 1 ? "Computer" : "Friend"}
+						/>
 						<History
 							state={props.state}
 							dispatch={props.dispatch}
@@ -70,7 +76,9 @@ function Play(props) {
 							handleChangeOrientation={props.handleChangeOrientation}
 							handleNewGame={props.handleNewGame}
 						/>
-						<PlayerText/>
+						<PlayerText
+							playerName="You"
+						/>
 					</div>
 					<Captured
 						state={props.state}

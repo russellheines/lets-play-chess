@@ -24,16 +24,11 @@ export const initialState = {
 };
 
 export function reducer(state, action) {
-    if (action.type === 'reload') {
+    if (action.type === 'connected') {
         return {
             ...state,
+            isConnected: true,
             isActive: false
-        };
-    }
-    else if (action.type === 'connected') {
-        return {
-            ...state,
-            isConnected: true
         };
     }
     else if (action.type === 'disconnected') {
@@ -140,12 +135,10 @@ export function reducer(state, action) {
         chessjs.loadPgn(action.pgn)
 
         if (chessjs.fen() === state.fen[state.fen.length - 1]) {
-            //console.log("no changes, leaving isActive: " + state.isActive);
             return {
                 ...state,  // nothing changed...
             };
         }
-        //console.log("changes, leaving isActive: true");
 
         const history = chessjs.history({verbose: true});
 
@@ -179,9 +172,6 @@ export function reducer(state, action) {
 
         return {
             ...initialState,
-            orientation: action.color,
-            color: action.color,
-            numberOfPlayers: action.numberOfPlayers,
             time: history.length,
             fen: fen,
             selected: null,
@@ -189,6 +179,9 @@ export function reducer(state, action) {
             lastTo: lastTo,
             moves: moves,
             inCheck: inCheck,
+            orientation: action.color,
+            color: action.color,
+            numberOfPlayers: action.numberOfPlayers,
             youWon: youWon,
             youLost: youLost,
             isActive: true

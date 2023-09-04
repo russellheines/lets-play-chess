@@ -24,14 +24,6 @@ function reconnect(socket, attemptsRemaining=10) {
 
 function App() {
 
-	const [username, setUsername] = useState(undefined);
-
-	useEffect(() => {
-		fetch('/isAuthenticated', {credentials: "include"})
-		.then(res => res.json())
-		.then(data => setUsername(data.name ? data.name : null));
-	}, []);
-	
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
@@ -66,21 +58,17 @@ function App() {
 			dispatch({type: "pgn", pgn: pgn, color: color, numberOfPlayers: numberOfPlayers});
 		});
 
-		socket.on("reload", () => {
-			dispatch({type: "reload"});  // set isActive = false
-		});
-
 		return () => {
 			socket.off('connect');
 			socket.off('disconnect');
 			socket.off('waiting');
 			socket.off('accepted');
 			socket.off('pgn');
-			socket.off('reload');
 		};
 	}, [state.isActive]);  // TODO: useCallback for reconnect
 
 	function handleClickSquare(row, col) {
+		
 		//console.log("clicked row: " + row + ", col:" + col);
 		if (validateSelection(state, row, col)) {
 			dispatch({type: "select", row: row, col: col});
@@ -128,7 +116,6 @@ function App() {
 	}
 
 	const layout = <Layout
-		name={username}
 		handleOnePlayer={handleOnePlayer}
 		handleTwoPlayers={handleTwoPlayers}
 	/>

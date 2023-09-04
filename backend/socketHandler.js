@@ -34,8 +34,6 @@ function listenChallenges(req, socket) {
     const query = firestore.collection('lets-play-challenges').where("gameId", "==", req.session.gameId).orderBy('timestamp');
     const unsubscribe = query.onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
-            console.log("in onSnapshot");
-            console.log("req.session.gameId=" + req.session.gameId);
             if ((change.type === 'modified') && (change.doc.data().accepted === true)) {
                 socket.emit('accepted', req.session.color);
             }
@@ -49,12 +47,12 @@ function listenChallenges(req, socket) {
 
 function computerMove(req) {
 
-    // send the computer's color, as a way to make sure it doesn't try to make two moves if the message is processed
-    // more than once
+    // send the computer's color, to protect against messages being processed more than once
     const computerColor = req.session.color == 0 ? 1 : 0
     const data = JSON.stringify({gameId: req.session.gameId, color: computerColor});
 
     try {
+        //console.log("publishing message...");
         pubsub.topic("alphabeta-topic").publishMessage({data: Buffer.from(data)});
     }
     catch (error) {
@@ -79,8 +77,7 @@ module.exports = socket => {
     console.log('req.session.numberOfPlayers: ' + req.session.numberOfPlayers);
       
     if (req.session.gameId) {
-        socket.emit('reload');  // sets isActive = false
-        detachListener = listen(req, socket);
+        let waiting = false;
 
         firestore.collection("lets-play-challenges").where("gameId", "==", req.session.gameId).get()
             .then(query => {
@@ -91,9 +88,14 @@ module.exports = socket => {
                     const challengeId = doc.data().challengeId;
 
                     if ((!accepted) && (challengingColor === req.session.color)) {
+                        waiting = true;
                         detachListenerChallenges = listenChallenges(req, socket);
                         socket.emit('waiting', challengeId);
                     }
+                }
+
+                if (!waiting) {
+                    detachListener = listen(req, socket);
                 }
             });
     }
@@ -132,9 +134,8 @@ module.exports = socket => {
                 const chessjs = new Chess();
                 chessjs.loadPgn(doc.data().pgn);
 
-                // check the color, as a way to make sure we don't try to make two moves if the message is processed
-                // more than once
-                if (((chessjs.turn() === 'w') && (req.session.color === 0)) || ((chessjs.turn() === 'b') && (req.session.color === 1))) {
+                try {
+                    //console.log("making move " + position.lastMove.san);
                     chessjs.move(position.lastMove);
 
                     docRef.update({ pgn: chessjs.pgn()})
@@ -144,8 +145,8 @@ module.exports = socket => {
                         }
                     });
                 }
-                else {
-                    console.log("wrong color!");
+                catch(error) {
+                    console.error(`error making move: ${error.message}`);
                 }
             }
         })
