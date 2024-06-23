@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/lets-play-chess/static/css/main.7d6c4582.css",
+    "main.js": "/lets-play-chess/static/js/main.13f9ef8b.js",
+    "static/media/wbK.svg": "/lets-play-chess/static/media/wbK.c1ff0c86f1e9342931d248eaabafc928.svg",
+    "static/media/rdt45.svg": "/lets-play-chess/static/media/rdt45.9859c67519a6585df38a9a99be17a2c6.svg",
+    "static/media/qdt45.svg": "/lets-play-chess/static/media/qdt45.ac0e24f93185fd8b6cd500f0070e7a5b.svg",
+    "static/media/qlt45.svg": "/lets-play-chess/static/media/qlt45.4b58d14ce80eb6c12f0cbae18bc3ed2a.svg",
+    "static/media/kdt45.svg": "/lets-play-chess/static/media/kdt45.a01faef0fe48a2bcaed204d90379dd44.svg",
+    "static/media/ndt45.svg": "/lets-play-chess/static/media/ndt45.e8b66688fdfcd3e89c3bb59dd5c8b829.svg",
+    "static/media/klt45.svg": "/lets-play-chess/static/media/klt45.ac27089b8ba9654b26f597c985a86dda.svg",
+    "static/media/bdt45.svg": "/lets-play-chess/static/media/bdt45.a285a312a0c59a9f86b839e1e7074fa5.svg",
+    "static/media/blt45.svg": "/lets-play-chess/static/media/blt45.04af1ba66a5b39eb0dcdfeb06181a734.svg",
+    "static/media/nlt45.svg": "/lets-play-chess/static/media/nlt45.53b45c2611c105379a3f279e6f0b2e38.svg",
+    "index.html": "/lets-play-chess/index.html",
+    "static/media/rlt45.svg": "/lets-play-chess/static/media/rlt45.0169ce2798b4ae32cd226da46f4156aa.svg",
+    "static/media/bK.svg": "/lets-play-chess/static/media/bK.bc28664a7914dbdf0c1afa5e329d80a9.svg",
+    "static/media/pdt45.svg": "/lets-play-chess/static/media/pdt45.889d458e6545e8257114692d9fb2780c.svg",
+    "static/media/plt45.svg": "/lets-play-chess/static/media/plt45.a93f533995578c27274ecae37330584e.svg",
+    "static/media/wK.svg": "/lets-play-chess/static/media/wK.0d914520ce0f3ec1b0aaddbdf71fad45.svg",
+    "main.7d6c4582.css.map": "/lets-play-chess/static/css/main.7d6c4582.css.map",
+    "main.13f9ef8b.js.map": "/lets-play-chess/static/js/main.13f9ef8b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7d6c4582.css",
+    "static/js/main.13f9ef8b.js"
+  ]
+}
