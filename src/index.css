@@ -1,0 +1,233 @@
+* {
+    box-sizing: border-box;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+}
+
+.board {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+@media only screen and (orientation: landscape) {
+    #root {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+    }
+    .board {
+        order: 1;
+    }
+    .panel {
+        order: 2;
+    }
+}
+
+/* Looks good on my phone in landscape */
+@media only screen and (orientation: landscape) {
+    .board {width: 240px}
+    .panel {width: 240px; height: 240px;}
+}
+
+@media only screen and (orientation: landscape) and (min-width: 768px) {
+    .board {width: 468px}
+    .panel {width: 234px; height: 468px;}
+}
+
+/* Looks good on Ingrid's iPad Air 2 in landscape */
+@media only screen and (orientation: landscape) and (min-width: 992px) {
+    .board {width: 600px}
+    .panel {width: 300px; height: 600px;}
+}
+
+/* Looks good on my laptop in landscape */
+@media only screen and (orientation: landscape) and (min-width: 1200px) {
+    .board {width: 720px}
+    .panel {width: 360px; height: 720px;}
+}
+
+/* Box shadow */
+
+.box-shadow {
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.box-shadow-inset {
+	box-shadow: 0 4px 4px #cdc8c1 inset;
+}
+
+/* History */
+
+.historyButtonsTop {
+    display: none;
+    background-color: rgb(247, 246, 245);
+}
+
+.historyButtonsLeft {
+    display: flex;
+    background-color: rgb(247, 246, 245);
+}
+
+.historyButtonsRight {
+    display: flex;
+    background-color: rgb(247, 246, 245);
+}
+
+.historyButton {
+    text-align: center;
+    flex-grow: 0;
+}
+
+.historyButton.disabled {
+    opacity: 0.25;
+}
+.historyButton:hover:not(.disabled) {
+    background-color: rgb(137,178,91);
+    color: rgb(255,255,255)
+}
+
+.history {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    overflow-x: hidden;
+    background-color: rgb(255,255,255);
+}
+
+.moveNumber, .move {
+    padding: 4px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+.moveNumber:after {
+    content: '.';
+  }
+.move.current {
+    background-color: rgb(209,228,246);
+}
+.move:hover:not(.current) {
+    background-color: rgb(27, 120, 208);
+    color: rgb(255,255,255)
+}
+
+@media only screen and (orientation: landscape) {
+    .historyButtonsTop {
+        display: flex;
+    }
+    .historyButtonsLeft {
+        display: none;
+    }
+    .historyButtonsRight {
+        display: none;
+    }
+    .historyButton {
+        text-align: center;
+        flex-grow: 1;
+    }
+    .history {
+        flex-wrap: wrap;
+    }
+    .moveNumber {
+        width: 20%;
+        text-align: center;
+        background-color: rgb(247, 246, 245);
+    }
+    .moveNumber:after {
+        content: '';
+    }
+    .move {
+        width: 40%;
+        padding: 6px;
+        padding-left: 8px;
+    }
+}
+
+/* Squares */
+
+.square {
+    width: 12.5%;
+    padding-top: 12.5%; /* 1:1 Aspect Ratio */
+    position: relative;
+}
+.light {
+    background-color: rgb(240, 217, 181);
+}
+.dark {
+    background-color: rgb(181, 136, 99);
+}
+.light.selected {
+    background-color: rgb(130, 151, 105);
+}
+.light.lastFrom, .light.lastTo {
+    background-color: rgb(205, 210, 106);
+}
+.dark.selected {
+    background-color: rgb(100, 111, 64);
+}
+.dark.lastFrom, .dark.lastTo {    
+    background-color: rgb(170, 162, 58);
+}
+.check {
+    background-image: radial-gradient(ellipse at center, red 0%, #e70000 25%, rgba(169,0,0,0) 89%, rgba(158,0,0,0) 100%);
+}
+.square > * {
+    position: absolute;
+}
+.square > svg {
+    top: 0;
+    left: 0;
+}
+.square > .rank, .square > .file {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+}
+.square > .rank {
+    top: 0;
+    right: 2px;
+}
+.square > .file {
+    bottom: 0;
+    left: 4px;
+}
+.square.light > .rank, .square.light > .file {
+    color: rgb(181, 136, 99);
+}
+.square.dark > .rank, .square.dark > .file {
+    color: rgb(240, 217, 181);
+}
+
+/* Dialog */
+
+.dialogSquare {
+    width: 20%;
+    padding-top: 20%; /* 1:1 Aspect Ratio */
+    position: relative;
+    background-color: rgb(243, 243, 243);
+    box-shadow:
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    margin: 8px;
+}
+.dialogSquare > * {
+	position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+}
+.dialogSquare:hover {
+    background-color: rgb(249, 249, 249);
+}
