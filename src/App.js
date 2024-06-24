@@ -27,7 +27,7 @@ function App() {
 
   useEffect(() => {
     // create new web worker
-    const worker = new Worker('lets-play-chess/worker.js');
+    const worker = new Worker('worker.js');
 
     // set up event listener for messages from the worker
     worker.onmessage = function (event) {
@@ -174,6 +174,12 @@ function App() {
         setDialogTitle("You lost!");
         setDialogText("Choose a side to play again:")
       }
+    }
+
+    if (chessjs.isDraw()) {
+      setShowDialog(true);
+      setDialogTitle("Draw!");
+      setDialogText("Choose a side to play again:")
     }
   }
 

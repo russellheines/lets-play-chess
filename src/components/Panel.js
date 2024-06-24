@@ -37,7 +37,8 @@ function Panel(props) {
         if (i === props.time-1) {
             styles.push("current");
         }
-        items.push(<div key = {i} className={styles.join(" ")} onClick={() => props.handleClickIndex(i+1)}>{props.history[i]}</div>);
+        const san = props.history[i].replaceAll('-',String.fromCharCode(8209));  // non-breaking hyphen
+        items.push(<div key = {i} className={styles.join(" ")} onClick={() => props.handleClickIndex(i+1)}>{san}</div>);
     }
 
     return (
