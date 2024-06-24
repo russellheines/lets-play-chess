@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/lets-play-chess/static/css/main.7d6c4582.css",
-    "main.js": "/lets-play-chess/static/js/main.13f9ef8b.js",
+    "main.js": "/lets-play-chess/static/js/main.2fca4ac5.js",
     "static/media/wbK.svg": "/lets-play-chess/static/media/wbK.c1ff0c86f1e9342931d248eaabafc928.svg",
     "static/media/rdt45.svg": "/lets-play-chess/static/media/rdt45.9859c67519a6585df38a9a99be17a2c6.svg",
     "static/media/qdt45.svg": "/lets-play-chess/static/media/qdt45.ac0e24f93185fd8b6cd500f0070e7a5b.svg",
@@ -19,10 +19,10 @@
     "static/media/plt45.svg": "/lets-play-chess/static/media/plt45.a93f533995578c27274ecae37330584e.svg",
     "static/media/wK.svg": "/lets-play-chess/static/media/wK.0d914520ce0f3ec1b0aaddbdf71fad45.svg",
     "main.7d6c4582.css.map": "/lets-play-chess/static/css/main.7d6c4582.css.map",
-    "main.13f9ef8b.js.map": "/lets-play-chess/static/js/main.13f9ef8b.js.map"
+    "main.2fca4ac5.js.map": "/lets-play-chess/static/js/main.2fca4ac5.js.map"
   },
   "entrypoints": [
     "static/css/main.7d6c4582.css",
-    "static/js/main.13f9ef8b.js"
+    "static/js/main.2fca4ac5.js"
   ]
 }
