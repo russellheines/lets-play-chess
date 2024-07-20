@@ -86,9 +86,12 @@ class Engine {
     /*
      * Implements alpha beta pruning, where alpha and beta keep track of the best score either side
      * can acheive, assuming best play from the opponent.
+     * 
+     * alpha - minimum score that the maximizing player is guaranteed (white)
+     * beta - maximum score that the minimizing player is guaranteed (black)
      */
     alphabeta_root(initialDepth, maximizingPlayer) {
-        console.log("==================");
+        //console.log("==========");
         return this.alphabeta(initialDepth, initialDepth, -999, 999, maximizingPlayer);
     }
 
@@ -106,10 +109,16 @@ class Engine {
             let max = -999;
             for (let i=0; i < moves.length; i++) {
                 this.chessjs.move(moves[i]);
+                //if (initialDepth === currentDepth) {
+                //    console.log("first: " + moves[i].san);
+                //}
+                //if (initialDepth === currentDepth+1) {
+                //    console.log("  second: " + moves[i].san);
+                //}
                 let minimax = this.alphabeta(initialDepth, currentDepth-1, alpha, beta, false);
-                if (initialDepth === currentDepth) {
-                    console.log("option: " + moves[i].san + ", score: " + minimax.score);
-                }
+                //if (initialDepth === currentDepth+2) {
+                //    console.log("    third: " + moves[i].san + ", score: " + minimax.score);
+                //}
                 let score = minimax.score;
                 this.chessjs.undo();
 
@@ -122,12 +131,19 @@ class Engine {
                     best.push(moves[i]);
                 }
 
-                // minimum score that the maximizing player is guaranteed
-                alpha = Math.max(alpha, score);
-
+                // if better for white than what's already the best for black, then black won't choose this branch
                 if (max > beta) {
+                    //if (initialDepth === currentDepth+1) {
+                    //    console.log("  break max(" + max + "), beta (" + beta + ")");
+                    //}
+                    //if (initialDepth === currentDepth+2) {
+                    //    console.log("    break max(" + max + "), beta (" + beta + ")");
+                    //}
                     break;
                 }
+
+                // best score so far for white
+                alpha = Math.max(alpha, score);
             }
             return {score: max, best: best};
         }    
@@ -135,10 +151,16 @@ class Engine {
             let min = 999;
             for (let i=0; i < moves.length; i++) {
                 this.chessjs.move(moves[i]);
+                //if (initialDepth === currentDepth) {
+                //    console.log("first: " + moves[i].san);
+                //}
+                //if (initialDepth === currentDepth+1) {
+                //    console.log("  second: " + moves[i].san);
+                //}
                 let minimax = this.alphabeta(initialDepth, currentDepth-1, alpha, beta, true);
-                if (initialDepth === currentDepth) {
-                    console.log("option: " + moves[i].san + ", score: " + minimax.score);
-                }
+                //if (initialDepth === currentDepth+2) {
+                //    console.log("    third: " + moves[i].san + ", score: " + minimax.score);
+                //}
                 let score = minimax.score;
                 this.chessjs.undo();
 
@@ -151,12 +173,19 @@ class Engine {
                     best.push(moves[i]);
                 }
 
-                // maximum score that the minimizing player is guaranteed
-                beta = Math.min(beta, score);
-
+                // if better for black than what's already the best for white, then white won't choose this branch
                 if (min < alpha) {
+                    //if (initialDepth === currentDepth+1) {
+                    //    console.log("  break min(" + min + "), beta (" + beta + ")");
+                    //}
+                    //if (initialDepth === currentDepth+2) {
+                    //    console.log("    break min(" + min + "), beta (" + beta + ")");
+                    //}
                     break;
                 }
+
+                // best score so far for black
+                beta = Math.min(beta, score);
             }
             return {score: min, best: best};
         }    
@@ -189,6 +218,9 @@ class Engine {
         let minimax = this.alphabeta_root(3, this.chessjs.turn() === 'w' ? true : false);
         let best = minimax.best[Math.floor(Math.random() * minimax.best.length)];
 
+        for (let i=0; i<minimax.best.length; i++) {
+            console.log("best[" + i + "]: " + minimax.best[i].san);
+        }
         console.log("choice: " + best.san + ", score: " + minimax.score);
         
         this.chessjs.move({from: best.from, to: best.to, promotion: best.promotion});
