@@ -26,8 +26,9 @@ function App() {
   const [dialogText, setDialogText] = useState("Choose a side:");
 
   useEffect(() => {
+
     // create new web worker
-    const worker = new Worker('worker.js');
+    const worker = new Worker(new URL('./worker.js', import.meta.url));  // https://webpack.js.org/guides/web-workers/
 
     // set up event listener for messages from the worker
     worker.onmessage = function (event) {
