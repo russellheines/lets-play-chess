@@ -88,6 +88,7 @@ class Engine {
      * can acheive, assuming best play from the opponent.
      */
     alphabeta_root(initialDepth, maximizingPlayer) {
+        console.log("==================");
         return this.alphabeta(initialDepth, initialDepth, -999, 999, maximizingPlayer);
     }
 
@@ -106,6 +107,9 @@ class Engine {
             for (let i=0; i < moves.length; i++) {
                 this.chessjs.move(moves[i]);
                 let minimax = this.alphabeta(initialDepth, currentDepth-1, alpha, beta, false);
+                if (initialDepth === currentDepth) {
+                    console.log("option: " + moves[i].san + ", score: " + minimax.score);
+                }
                 let score = minimax.score;
                 this.chessjs.undo();
 
@@ -118,10 +122,10 @@ class Engine {
                     best.push(moves[i]);
                 }
 
-                if (score > alpha) {
-                    alpha = score;
-                }
-                if (beta <= alpha) {
+                // minimum score that the maximizing player is guaranteed
+                alpha = Math.max(alpha, score);
+
+                if (max > beta) {
                     break;
                 }
             }
@@ -132,6 +136,9 @@ class Engine {
             for (let i=0; i < moves.length; i++) {
                 this.chessjs.move(moves[i]);
                 let minimax = this.alphabeta(initialDepth, currentDepth-1, alpha, beta, true);
+                if (initialDepth === currentDepth) {
+                    console.log("option: " + moves[i].san + ", score: " + minimax.score);
+                }
                 let score = minimax.score;
                 this.chessjs.undo();
 
@@ -144,10 +151,10 @@ class Engine {
                     best.push(moves[i]);
                 }
 
-                if (score < beta) {
-                    beta = score;
-                }
-                if (beta <= alpha) {
+                // maximum score that the minimizing player is guaranteed
+                beta = Math.min(beta, score);
+
+                if (min < alpha) {
                     break;
                 }
             }
@@ -170,7 +177,7 @@ class Engine {
 
     move_minimax() {
         let minimax = this.minimax_root(2, this.chessjs.turn() === 'w' ? true : false);
-        let best = minimax.best[Math.floor(Math.random() * minimax.best.length)];;
+        let best = minimax.best[Math.floor(Math.random() * minimax.best.length)];
         
         this.chessjs.move({from: best.from, to: best.to, promotion: best.promotion});
         const fen = this.chessjs.fen();
@@ -180,7 +187,9 @@ class Engine {
 
     move_alphabeta() {
         let minimax = this.alphabeta_root(3, this.chessjs.turn() === 'w' ? true : false);
-        let best = minimax.best[Math.floor(Math.random() * minimax.best.length)];;
+        let best = minimax.best[Math.floor(Math.random() * minimax.best.length)];
+
+        console.log("choice: " + best.san + ", score: " + minimax.score);
         
         this.chessjs.move({from: best.from, to: best.to, promotion: best.promotion});
         const fen = this.chessjs.fen();
