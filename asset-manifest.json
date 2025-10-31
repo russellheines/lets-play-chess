@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/lets-play-chess/static/css/main.fe01767c.css",
-    "main.js": "/lets-play-chess/static/js/main.df7e14b6.js",
-    "static/js/512.007ef652.chunk.js": "/lets-play-chess/static/js/512.007ef652.chunk.js",
+    "main.css": "/lets-play-chess/static/css/main.8ce16532.css",
+    "main.js": "/lets-play-chess/static/js/main.03ec5810.js",
+    "static/js/512.9ea2634e.chunk.js": "/lets-play-chess/static/js/512.9ea2634e.chunk.js",
     "static/js/314.b78506ac.chunk.js": "/lets-play-chess/static/js/314.b78506ac.chunk.js",
     "static/media/wbK.svg": "/lets-play-chess/static/media/wbK.c1ff0c86f1e9342931d248eaabafc928.svg",
     "static/media/rdt45.svg": "/lets-play-chess/static/media/rdt45.9859c67519a6585df38a9a99be17a2c6.svg",
@@ -20,13 +20,13 @@
     "static/media/pdt45.svg": "/lets-play-chess/static/media/pdt45.889d458e6545e8257114692d9fb2780c.svg",
     "static/media/plt45.svg": "/lets-play-chess/static/media/plt45.a93f533995578c27274ecae37330584e.svg",
     "static/media/wK.svg": "/lets-play-chess/static/media/wK.0d914520ce0f3ec1b0aaddbdf71fad45.svg",
-    "main.fe01767c.css.map": "/lets-play-chess/static/css/main.fe01767c.css.map",
-    "main.df7e14b6.js.map": "/lets-play-chess/static/js/main.df7e14b6.js.map",
-    "512.007ef652.chunk.js.map": "/lets-play-chess/static/js/512.007ef652.chunk.js.map",
+    "main.8ce16532.css.map": "/lets-play-chess/static/css/main.8ce16532.css.map",
+    "main.03ec5810.js.map": "/lets-play-chess/static/js/main.03ec5810.js.map",
+    "512.9ea2634e.chunk.js.map": "/lets-play-chess/static/js/512.9ea2634e.chunk.js.map",
     "314.b78506ac.chunk.js.map": "/lets-play-chess/static/js/314.b78506ac.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fe01767c.css",
-    "static/js/main.df7e14b6.js"
+    "static/css/main.8ce16532.css",
+    "static/js/main.03ec5810.js"
   ]
 }
