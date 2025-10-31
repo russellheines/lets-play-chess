@@ -175,6 +175,10 @@ function move_minimax(chessjs) {
     let result = minimax(chessjs, 3, 3, chessjs.turn() === 'w' ? true : false);
     let best = result.best[Math.floor(Math.random() * result.best.length)];
     
+    if (!best) {
+        const moves = chessjs.moves({verbose: true});
+        best = moves[Math.floor(Math.random() * moves.length)];
+    }
     chessjs.move({from: best.from, to: best.to, promotion: best.promotion});
     const fen = chessjs.fen();
     
@@ -187,6 +191,10 @@ function move_alphabeta(chessjs) {
     let result = alphabeta(chessjs, 3, 3, chessjs.turn() === 'w' ? true : false, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
     let best = result.best[Math.floor(Math.random() * result.best.length)];
 
+    if (!best) {
+        const moves = chessjs.moves({verbose: true});
+        best = moves[Math.floor(Math.random() * moves.length)];
+    }
     chessjs.move({from: best.from, to: best.to, promotion: best.promotion});
     const fen = chessjs.fen();
 
