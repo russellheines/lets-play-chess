@@ -1,0 +1,122 @@
+.move-history-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #6b6966;
+  font-style: italic;
+}
+
+.move-history {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  font-variant-numeric: tabular-nums;
+  border-top: 1px solid #363431;
+  border-bottom: 1px solid #363431;
+  margin: 0 -1.25rem; /* Flush edge-to-edge inside .panel */
+}
+
+/* Subtle custom scrollbar matching Lichess dark mode */
+.move-history::-webkit-scrollbar {
+  width: 6px;
+  height: 4px;
+}
+
+.move-history::-webkit-scrollbar-thumb {
+  background-color: #45423e;
+  border-radius: 3px;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 42px 1fr 1fr;
+  align-items: center;
+  font-size: 0.9rem;
+  line-height: 1.9;
+}
+
+.move-row:nth-child(even) {
+  background-color: #2b2926;
+}
+
+.move-num {
+  text-align: center;
+  color: #787673;
+  background-color: #211f1d;
+  font-size: 0.8rem;
+  user-select: none;
+}
+
+.move-cell {
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0 0.75rem;
+  color: #bababa;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.move-cell:not(.empty):hover {
+  background-color: #363431;
+  color: #ffffff;
+}
+
+.move-cell.empty {
+  cursor: default;
+}
+
+/* Lichess active/selected move highlight */
+.move-cell.latest,
+.move-cell.latest:hover {
+  background-color: #36392e;
+  color: #e6f0c2;
+  font-weight: 700;
+}
+
+/* iPhone: compact single-line horizontal move strip */
+@media (max-width: 600px) {
+  .move-history-empty {
+    justify-content: flex-start;
+    padding: 0 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .move-history {
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-top: none;
+    border-bottom: none;
+    margin: 0;
+    gap: 0.35rem;
+    white-space: nowrap;
+  }
+
+  .move-row {
+    display: inline-flex;
+    align-items: center;
+    background: transparent !important;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    gap: 0.25rem;
+  }
+
+  .move-num {
+    background: transparent;
+    padding-left: 0.2rem;
+  }
+
+  .move-cell {
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+  }
+}

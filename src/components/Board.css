@@ -1,0 +1,147 @@
+.board-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(78dvh, 92vw, 600px);
+  aspect-ratio: 1 / 1;
+  border: 2px solid #2c2b29;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  user-select: none;
+}
+
+.square {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* Removes gray flash on iOS tap */
+}
+
+/* Lichess default "Brown" board theme */
+.square.light {
+  background-color: #f0d9b5;
+}
+
+.square.dark {
+  background-color: #b58863;
+}
+
+/* Coordinate labels */
+.coord {
+  position: absolute;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.coord-rank {
+  top: 4px;
+  left: 5px;
+}
+
+.coord-file {
+  bottom: 4px;
+  right: 5px;
+}
+
+.square.light .coord {
+  color: #b58863;
+}
+
+.square.dark .coord {
+  color: #f0d9b5;
+}
+
+/* Last move origin & destination highlight */
+.square.last-move::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(155, 199, 0, 0.41);
+  pointer-events: none;
+}
+
+/* Currently selected square highlight (overrides last-move) */
+.square.selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(20, 85, 30, 0.5);
+  pointer-events: none;
+}
+
+/* Lichess King-in-check radial red glow (fades cleanly to the square color, never black) */
+.square.in-check {
+  background-image: radial-gradient(
+    ellipse at center,
+    rgba(255, 0, 0, 0.95) 0%,
+    rgba(231, 0, 0, 0.85) 28%,
+    rgba(231, 0, 0, 0) 80%
+  );
+}
+
+
+/* Lichess center dot on empty legal destination squares */
+.square.dest-move::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    rgba(20, 85, 30, 0.5) 19%,
+    rgba(0, 0, 0, 0) 20%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Lichess corner triangles on occupied capture squares */
+.square.dest-capture::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    transparent 0%,
+    transparent 79%,
+    rgba(20, 85, 30, 0.35) 80%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hover / active feedback on candidate destination squares */
+.square.dest-move:hover::after,
+.square.dest-capture:hover::after {
+  background: rgba(20, 85, 30, 0.3);
+}
+
+/* Chess piece SVGs */
+.piece {
+  position: relative;
+  z-index: 1;
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* Prevents iOS Safari long-press image popup */
+}
+
+/* iPhone: maximize board width while keeping header + compact bar above the fold */
+@media (max-width: 600px) {
+  .board {
+    width: min(72dvh, 95vw);
+  }
+}
