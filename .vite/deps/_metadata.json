@@ -1,0 +1,38 @@
+{
+  "hash": "93a26c8f",
+  "configHash": "6d2d411a",
+  "lockfileHash": "1de62270",
+  "browserHash": "edf26cea",
+  "optimized": {
+    "chess.js": {
+      "src": "../../node_modules/chess.js/dist/esm/chess.js",
+      "file": "chess__js.js",
+      "fileHash": "487e2b3c",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "0b6813b5",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "4db6b746",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "07efbf6f",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "react-DgVJeC5g": {
+      "file": "react-DgVJeC5g.js",
+      "isDynamicEntry": false
+    }
+  }
+}
